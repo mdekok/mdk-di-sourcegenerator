@@ -1,0 +1,30 @@
+@MinimalApi_HostAddress = http://localhost:5106
+
+GET {{MinimalApi_HostAddress}}/registrations
+###
+
+GET {{MinimalApi_HostAddress}}/MinimalApiService
+###
+
+GET {{MinimalApi_HostAddress}}/MyService
+
+###
+GET {{MinimalApi_HostAddress}}/IInterface1
+###
+
+GET {{MinimalApi_HostAddress}}/MyGenericService
+###
+GET {{MinimalApi_HostAddress}}/IInterface2string
+###
+GET {{MinimalApi_HostAddress}}/IInterface2int
+###
+
+GET {{MinimalApi_HostAddress}}/IInterface3
+###
+GET {{MinimalApi_HostAddress}}/IInterface4
+###
+
+GET {{MinimalApi_HostAddress}}/MyBaseService
+###
+GET {{MinimalApi_HostAddress}}/IBaseInterface
+###

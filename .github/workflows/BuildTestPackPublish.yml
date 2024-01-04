@@ -1,0 +1,31 @@
+name: Build, test, pack and publish
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  build-test-pack-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Check out
+        uses: actions/checkout@v3
+
+      - name: Build
+        run: dotnet build 'DISourceGenerator/Mdk.DISourceGenerator.csproj' --configuration Release
+
+      - name: Test
+        run: dotnet test 'DISourceGenerator.UnitTests/Mdk.DISourceGenerator.UnitTests.csproj' --configuration Release
+
+      - name: Package
+        run: dotnet pack 'DISourceGenerator/Mdk.DISourceGenerator.csproj' --configuration Release --output publish_folder
+
+      - name: Publish
+        run: dotnet nuget push publish_folder/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}

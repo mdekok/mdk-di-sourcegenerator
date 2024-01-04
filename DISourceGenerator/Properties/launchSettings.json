@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Debug source generator": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\Examples\\BaseBusinessLogic\\BusinessBaseLogic.csproj"
+    }
+  }
+}

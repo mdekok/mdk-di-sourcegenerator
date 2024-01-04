@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\BaseBusinessLogic\BusinessBaseLogic.csproj" />
+	</ItemGroup>
+
+	<!-- Add generated files to source control. -->
+	<!-- See for explanation : https://github.com/mdekok/DISourceGenerator#inspecting-generated-source-code -->
+	<PropertyGroup>
+		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+		<CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
+	</PropertyGroup>
+	<ItemGroup>
+		<Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs" />
+		<None Include="$(CompilerGeneratedFilesOutputPath)/**/*.cs" />
+	</ItemGroup>
+
+</Project>

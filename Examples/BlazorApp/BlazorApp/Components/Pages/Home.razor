@@ -1,0 +1,58 @@
+﻿@page "/"
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<hr />
+<b>Injected services and corresponding implementation types</b>
+
+<table>
+    <thead>
+        <tr>
+            <th>Service type</th>
+            <th>Implementation type</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>MyService</td>
+            <td>@this.MyService.GetType().Name</td>
+        </tr>
+        <tr>
+            <td>IInterface1</td>
+            <td>@this.Interface1.GetType().Name</td>
+        </tr>
+        <tr>
+            <td>MyGenericService&lt;int&gt;</td>
+            <td>@this.MyGenericService.GetType().Name</td>
+        </tr>
+        <tr>
+            <td>IInterface2&lt;string&gt;</td>
+            <td>@this.Interface2string.GetType().Name</td>
+        </tr>
+        <tr>
+            <td>IInterface2&lt;int&gt;</td>
+            <td>@this.Interface2int.GetType().Name</td>
+        </tr>
+        <tr>
+            <td>IInterface3</td>
+            <td>@this.Interface3.GetType().Name</td>
+        </tr>
+        <tr>
+            <td>IInterface4</td>
+            <td>@this.Interface4.GetType().Name</td>
+        </tr>
+
+        <tr>
+            <td>MyBaseService</td>
+            <td>@this.MyBaseService.GetType().Name</td>
+        </tr>
+        <tr>
+            <td>IBaseInterface</td>
+            <td>@this.BaseInterface.GetType().Name</td>
+        </tr>
+    </tbody>
+</table>

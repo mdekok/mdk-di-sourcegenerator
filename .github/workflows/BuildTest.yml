@@ -1,0 +1,30 @@
+name: Build and test
+
+on:
+  workflow_dispatch:
+  push:
+    branches: main
+    paths-ignore:
+      - 'README.md'
+      - '.github/workflows/**'
+  pull_request:
+    branches: main
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Check out
+        uses: actions/checkout@v3
+
+      - name: Build
+        run: dotnet build 'DISourceGenerator/Mdk.DISourceGenerator.csproj' --configuration Release
+
+      - name: Test
+        run: dotnet test 'DISourceGenerator.UnitTests/Mdk.DISourceGenerator.UnitTests.csproj' --configuration Release

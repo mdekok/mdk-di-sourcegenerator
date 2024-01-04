@@ -10,11 +10,14 @@
 		<Version>1.0.0</Version>
 		<Authors>Michel de Kok</Authors>
 		<Company>Michel de Kok Software Engineering</Company>
-		<PackageIcon>Icon.png</PackageIcon>
-		<PackageProjectUrl>https://github.com/mdekok/DISourceGenerator</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/mdekok/DISourceGenerator</RepositoryUrl>
 		<Description>Dependency injection by setting attributes and using a source generator to register service types.</Description>
 		<Title>Dependency injection using attributes and a source generator</Title>
+		<PackageIcon>Icon.png</PackageIcon>
+		<PackageProjectUrl>https://github.com/mdekok/DISourceGenerator</PackageProjectUrl>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageTags>DI;Dependency Injection;Attributes;Reflection;Incremental;Source;Generator</PackageTags>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -25,7 +28,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="Icon.png" Pack="true" PackagePath="\" />
+		<None Include="..\README.md" Pack="true" PackagePath="\" />
+		<None Update="Icon.png" Pack="true" PackagePath="\" />
 		<None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
 	</ItemGroup>
 

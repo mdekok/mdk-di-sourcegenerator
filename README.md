@@ -1,9 +1,10 @@
 [![Build and test](https://github.com/mdekok/mdk-di-sourcegenerator/actions/workflows/BuildTest.yml/badge.svg)](https://github.com/mdekok/mdk-di-sourcegenerator/actions/workflows/BuildTest.yml)
 [![Build, test, pack and publish](https://github.com/mdekok/mdk-di-sourcegenerator/actions/workflows/BuildTestPackPublish.yml/badge.svg)](https://github.com/mdekok/mdk-di-sourcegenerator/actions/workflows/BuildTestPackPublish.yml)
+[![Nuget](https://img.shields.io/nuget/v/Mdk.DISourceGenerator?logo=nuget)](https://www.nuget.org/packages/Mdk.DISourceGenerator)
 
 # Summary
 The DISourceGenerator package is designed to help clean up your service registration code when using the default Dependency Injection (DI) container in .NET. It allows you to use custom attributes to register your services, keeping the DI metadata close to the implementation classes.
-- Installation: The package is available on NuGet as [Mdk.DISourceGenerator](https://github.com/mdekok/mdk-di-sourcegenerator).
+- Installation: The package is available on NuGet as [Mdk.DISourceGenerator](https://www.nuget.org/packages/Mdk.DISourceGenerator/).
 - Attribute Usage: The package provides attributes like AddScoped, AddSingleton, and AddTransient for different lifetimes. You can use these attributes on your classes to register them with the DI container. For example, ```[AddScoped] class MyClass { ... }``` is equivalent to ```services.AddScoped<MyClass>();```.
 - The incremental source generator translates the attributes to registration code for the default DI container.
 
@@ -16,7 +17,7 @@ Attributes with registration information keep DI metadata close to the implement
 DISourceGenerator generates service registration source code based on attributes assigned to classes.
 Adding one line of code in ConfigureServices registers all services both in the host assembly as in directly and transitively referenced assemblies.
 
-In the examples section of this repository a Blazor application and a Minimal API project are added, in which this registration strategy is implemented.
+The examples section of the [GitHub repository](https://github.com/mdekok/mdk-di-sourcegenerator) contains a Blazor application and a Minimal API project, in which this registration strategy is implemented.
 
 - [Installation](#installation)
 - [Attribute usage](#attribute-usage)
@@ -35,12 +36,12 @@ Following examples focus on scoped registration. Use AddSingleton or AddTransien
 [AddScoped]
 class MyClass { ... }
 ```
-equals to ```services.AddScoped<MyClass>();```
+corresponds to ```services.AddScoped<MyClass>();```
 ```
 [AddScoped<IMyInterface>]
 class MyClass: IMyInterface { ... }
 ```
-equals to ```services.AddScoped<IMyInterface, MyClass>();```
+corresponds to ```services.AddScoped<IMyInterface, MyClass>();```
 
 Generic attributes require C# 11. If you are still on a earlier version use ```[AddScoped(typeof(IMyInterface))]```
 
@@ -50,7 +51,7 @@ Generic attributes require C# 11. If you are still on a earlier version use ```[
 [AddScoped<IMyInterface2>]
 class MyClass: IMyInterface1, IMyInterface2 { ... }
 ```
-equals to
+corresponds to
 ```
 services.AddScoped<IMyInterface1, MyClass>();
 services.AddScoped<IMyInterface2, MyClass>();
@@ -62,24 +63,24 @@ services.AddScoped<IMyInterface2, MyClass>();
 [AddScoped]
 class MyClass<T> { ... }
 ```
-equals to ```services.AddScoped(typeof(MyClass<>));```
+corresponds to ```services.AddScoped(typeof(MyClass<>));```
 ```
 [AddScoped(typeof(IMyInterface<>))]
 class MyClass<T>: IMyInterface<T> { ... }
 ```
-equals to ```services.AddScoped(typeof(IMyInterface<>), typeof(MyClass<>));```
+corresponds to ```services.AddScoped(typeof(IMyInterface<>), typeof(MyClass<>));```
 
 #### Bound generic registration:
 ```
 [AddScoped<MyClass<int>>]
 class MyClass<T> { ... }
 ```
-equals to ```services.AddScoped<MyClass<int>>();```
+corresponds to ```services.AddScoped<MyClass<int>>();```
 ```
 [AddScoped<IMyInterface<int>>]
 class MyClass<T>: IMyInterface<T> { ... }
 ```
-equals to ```services.AddScoped<IMyInterface<int>, MyClass<int>>();```
+corresponds to ```services.AddScoped<IMyInterface<int>, MyClass<int>>();```
 
 #### Multiple generic type parameters
 Multiple generic type parameters are also supported, for example:
@@ -87,7 +88,7 @@ Multiple generic type parameters are also supported, for example:
 [AddScoped]
 class MyClass<T, U> { ... }
 ```
-equals to ```services.AddScoped(typeof(MyClass<,>));```
+corresponds to ```services.AddScoped(typeof(MyClass<,>));```
 
 ## Generated source
 If there's a direct or transitive reference to the DISourceGenerator package and DIAttributes are used in an assembly, a registration method is generated per assembly.

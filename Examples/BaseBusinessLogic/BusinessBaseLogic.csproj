@@ -7,7 +7,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Mdk.DISourceGenerator" Version="1.0.0" />
+		<PackageReference Include="Mdk.DISourceGenerator" Version="1.0.1" />
 	</ItemGroup>
 
 	<!-- Add generated files to source control. -->

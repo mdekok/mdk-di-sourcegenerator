@@ -7,14 +7,14 @@
 		<IsRoslynComponent>true</IsRoslynComponent>
 		<Nullable>enable</Nullable>
 		<LangVersion>latest</LangVersion>
-		<Version>1.0.0</Version>
+		<Version>1.0.1</Version>
 		<Authors>Michel de Kok</Authors>
 		<Company>Michel de Kok Software Engineering</Company>
-		<RepositoryUrl>https://github.com/mdekok/DISourceGenerator</RepositoryUrl>
+		<RepositoryUrl>https://github.com/mdekok/mdk-di-sourcegenerator</RepositoryUrl>
 		<Description>Dependency injection by setting attributes and using a source generator to register service types.</Description>
 		<Title>Dependency injection using attributes and a source generator</Title>
 		<PackageIcon>Icon.png</PackageIcon>
-		<PackageProjectUrl>https://github.com/mdekok/DISourceGenerator</PackageProjectUrl>
+		<PackageProjectUrl>https://github.com/mdekok/mdk-di-sourcegenerator</PackageProjectUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageTags>DI;Dependency Injection;Attributes;Reflection;Incremental;Source;Generator</PackageTags>
@@ -24,7 +24,7 @@
 		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" PrivateAssets="all" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.8.0" PrivateAssets="all" />
 		<!-- Add Mdk.DIAttributes to be a transitive reference for clients. So only Mdk.DISourceGenerator has to be referenced by clients. -->
-		<PackageReference Include="Mdk.DIAttributes" Version="1.0.0" />
+		<PackageReference Include="Mdk.DIAttributes" Version="1.0.1" />
 	</ItemGroup>
 
 	<ItemGroup>

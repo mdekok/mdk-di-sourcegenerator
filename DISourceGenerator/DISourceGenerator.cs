@@ -78,7 +78,7 @@ public class DISourceGenerator : IIncrementalGenerator
 
         string assemblyName = compilation.AssemblyName ?? "UnknownAssemblyName";
 
-        DIRegistrationDictionary registrations = new(context);
+        List<DIRegistration> registrations = [];
 
         foreach (ClassDeclarationSyntax syntax in classDeclarationSyntaxList)
         {

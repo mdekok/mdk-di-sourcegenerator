@@ -7,14 +7,19 @@ namespace Mdk.DISourceGenerator.Lib;
 /// <summary>The diagnostics descriptors.</summary>
 internal static class DiagnosticsDescriptors
 {
-    public static readonly DiagnosticDescriptor ServiceTypeRegisteredMultipleTimes
+    // Usage:
+    // context is SourceProductionContext, available in Execute method in the generator.
+    // context.ReportDiagnostic(
+    //   Diagnostic.Create(DiagnosticsDescriptors.ServiceTypeRegisteredMultipleTimes, firstRegistration.SourceLocation, firstRegistration.ServiceType));
 
-        = new("DI001",
-            "Same servicetype registered multiple times as DIAttribute",
-            "Servicetype {0} is registered multiple times",
-            "Generator",
-            DiagnosticSeverity.Warning,
-            true);
+    //public static readonly DiagnosticDescriptor ServiceTypeRegisteredMultipleTimes
+
+    //    = new("DI001",
+    //        "Same servicetype registered multiple times as DIAttribute",
+    //        "Servicetype {0} is registered multiple times",
+    //        "Generator",
+    //        DiagnosticSeverity.Warning,
+    //        true);
 }
 
 #pragma warning restore RS2008 // Enable analyzer release tracking

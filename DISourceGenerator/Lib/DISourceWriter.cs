@@ -13,7 +13,7 @@ internal static class DISourceWriter
     /// <param name="registrations">The registrations to build sourcecode for.</param>
     /// <param name="referencedDIAssemblies">The referenced assemblies with additional generated registrations.</param>
     /// <returns>The dependency injection source code.</returns>
-    internal static string Write(string assemblyName, DIRegistrationDictionary registrations, IEnumerable<IAssemblySymbol> referencedDIAssemblies)
+    internal static string Write(string assemblyName, List<DIRegistration> registrations, IEnumerable<IAssemblySymbol> referencedDIAssemblies)
     {
         List<string?> registrationMethodCalls = BuildRegistrationMethodCalls(registrations);
         List<string> assemblyMethodCalls = BuildReferencedDIAssembliesMethodCalls(referencedDIAssemblies);
@@ -24,11 +24,11 @@ internal static class DISourceWriter
     /// <summary>Build method calls for registrations sorted on service lifetime and name.</summary>
     /// <param name="registrations">The registrations to build method calls for.</param>
     /// <returns>A list of string?. Null implies divider between different lifetimes.</returns>
-    private static List<string?> BuildRegistrationMethodCalls(DIRegistrationDictionary registrations)
+    private static List<string?> BuildRegistrationMethodCalls(List<DIRegistration> registrations)
     {
         List<string?> methodCalls = [];
         string? lastMethod = null;
-        foreach (DIRegistration registration in registrations.Values
+        foreach (DIRegistration registration in registrations
             .OrderBy(registration => registration.Method)
             .ThenBy(registration => registration.ServiceType.ToSource()))
         {

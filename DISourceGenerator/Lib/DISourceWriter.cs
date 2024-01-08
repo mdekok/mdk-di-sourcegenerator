@@ -74,8 +74,10 @@ internal static class DISourceWriter
         source.WriteLine();
         source.WriteLine("namespace Mdk.DISourceGenerator;");
         source.WriteLine();
+        source.WriteLine($"/// <summary>Dependency injection registrations for {assemblyName}.</summary>");
         source.WriteLine($"public static partial class {RegistrationStaticClassName}");
         source.WriteLine("{");
+        source.WriteLine($"    /// <summary>Registers the services for {assemblyName} and referenced assemblies.</summary>");
         source.WriteLine($"    public static IServiceCollection RegisterServices{sanitizedAssemblyName}(this IServiceCollection services)");
         source.WriteLine("    {");
         source.WriteLine($"        if ({registeredServicesFieldName})");

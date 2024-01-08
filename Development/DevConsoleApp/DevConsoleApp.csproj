@@ -13,6 +13,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\DISourceGenerator\Mdk.DISourceGenerator.csproj" OutputItemType="Analyzer" />
+		<ProjectReference Include="..\ReferencedLibrary\ReferencedLibrary.csproj" />
 	</ItemGroup>
 
 	<!-- Add generated files to source control. -->

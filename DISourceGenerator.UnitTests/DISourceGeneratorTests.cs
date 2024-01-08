@@ -1,17 +1,13 @@
 using Mdk.DISourceGenerator.Lib;
-using System;
 using System.Reflection;
 using Xunit.Abstractions;
 
 namespace Mdk.DISourceGenerator.UnitTests;
 
-public class DISourceGeneratorTests
+public class DISourceGeneratorTests(ITestOutputHelper output)
 {
-    public DISourceGeneratorTests(ITestOutputHelper output)
-        => this.output = output;
-
     private static readonly string assemblyName = Assembly.GetExecutingAssembly().GetName().Name!;
-    private readonly ITestOutputHelper output;
+    private readonly ITestOutputHelper output = output;
 
     [Theory]
     // Attribute without ServiceType or ImplementationType.

@@ -15,16 +15,16 @@ internal static class DISourceWriter
     /// <returns>The dependency injection source code.</returns>
     internal static string Write(string assemblyName, List<DIRegistration> registrations, IEnumerable<IAssemblySymbol> referencedDIAssemblies)
     {
-        List<string?> registrationMethodCalls = BuildRegistrationMethodCalls(registrations);
-        List<string> assemblyMethodCalls = BuildReferencedDIAssembliesMethodCalls(referencedDIAssemblies);
+        IEnumerable<string?> registrationMethodCalls = BuildRegistrationMethodCalls(registrations);
+        IEnumerable<string> assemblyMethodCalls = BuildReferencedDIAssembliesMethodCalls(referencedDIAssemblies);
 
         return MergeRegistrationSourceCode(assemblyName, registrationMethodCalls, assemblyMethodCalls);
     }
 
     /// <summary>Build method calls for registrations sorted on service lifetime and name.</summary>
     /// <param name="registrations">The registrations to build method calls for.</param>
-    /// <returns>A list of string?. Null implies divider between different lifetimes.</returns>
-    private static List<string?> BuildRegistrationMethodCalls(List<DIRegistration> registrations)
+    /// <returns>A list of string? containing registrations. Null implies divider between different lifetimes.</returns>
+    private static IEnumerable<string?> BuildRegistrationMethodCalls(List<DIRegistration> registrations)
     {
         List<string?> methodCalls = [];
         string? lastMethod = null;
@@ -50,24 +50,18 @@ internal static class DISourceWriter
 
     /// <summary>Build method calls for registering references assemblies.</summary>
     /// <param name="referencedDIAssemblies">The referenced assemblies with dependency registrations to build method call for.</param>
-    /// <returns>A list of string.</returns>
-    private static List<string> BuildReferencedDIAssembliesMethodCalls(IEnumerable<IAssemblySymbol> referencedDIAssemblies)
-    {
-        List<string> methodCalls = [];
-        foreach (IAssemblySymbol assembly in referencedDIAssemblies.OrderBy(assembly => assembly.Name))
-        {
-            methodCalls.Add($"services.RegisterServices{Sanitize(assembly.Name)}()");
-        }
-        return methodCalls;
-    }
-
+    /// <returns>A list of strings containing assembly registration method calls.</returns>
+    private static IEnumerable<string> BuildReferencedDIAssembliesMethodCalls(IEnumerable<IAssemblySymbol> referencedDIAssemblies)
+        => referencedDIAssemblies
+            .OrderBy(assembly => assembly.Name)
+            .Select(assembly => $"services.RegisterServices{Sanitize(assembly.Name)}()");
 
     /// <summary>Merges the dependency injection source code into the boiler plate source code.</summary>
     /// <param name="assemblyName">The assembly name, will be part of the registration method name.</param>
     /// <param name="registerMethodCalls">The register method calls for registrations in this assembly.</param>
     /// <param name="assemblyMethodCalls">The assembly method calls for registrations of referenced assemblies.</param>
     /// <returns>The dependency injection source code.</returns>
-    internal static string MergeRegistrationSourceCode(string assemblyName, List<string?> registerMethodCalls, List<string> assemblyMethodCalls)
+    internal static string MergeRegistrationSourceCode(string assemblyName, IEnumerable<string?> registerMethodCalls, IEnumerable<string> assemblyMethodCalls)
     {
         using StringWriter source = new();
 
@@ -88,15 +82,23 @@ internal static class DISourceWriter
         source.WriteLine("            return services;");
         source.WriteLine();
 
-        registerMethodCalls.ForEach(methodCall =>
-            source.WriteLine(methodCall is not null ? $"        services.{methodCall};" : null));
-        if (registerMethodCalls.Any())
-            source.WriteLine();
-
-        assemblyMethodCalls.ForEach(methodCall =>
-            source.WriteLine($"        {methodCall};"));
+        foreach (string assemblyMethodCall in assemblyMethodCalls)
+        {
+            source.WriteLine($"        {assemblyMethodCall};");
+        }
         if (assemblyMethodCalls.Any())
+        {
             source.WriteLine();
+        }
+
+        foreach (string? methodCall in registerMethodCalls)
+        {
+            source.WriteLine(methodCall is not null ? $"        services.{methodCall};" : null);
+        }
+        if (registerMethodCalls.Any())
+        {
+            source.WriteLine();
+        }
 
         source.WriteLine($"        {registeredServicesFieldName} = true;");
         source.WriteLine();

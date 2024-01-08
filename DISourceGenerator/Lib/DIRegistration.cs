@@ -1,10 +1,9 @@
 ﻿using Mdk.DISourceGenerator.Parts;
-using Microsoft.CodeAnalysis;
 
 namespace Mdk.DISourceGenerator.Lib;
 
 /// <summary>DI registration of a single service registration.</summary>
-public class DIRegistration(string method, IDIPart serviceType, IDIPart? implementationType = null, bool doNotShowAsGeneric = false)
+public class DIRegistration(string method, IDIPart serviceType, IDIPart? implementationType = null, bool doNotGenerateAsGeneric = false)
 {
     /// <summary>Gets the registration method: AddSingleton, AddScoped or AddTransient.</summary>
     public string Method { get; } = method;
@@ -15,29 +14,33 @@ public class DIRegistration(string method, IDIPart serviceType, IDIPart? impleme
     /// <summary>Gets the implementation type.</summary>
     public IDIPart? ImplementationType { get; } = implementationType;
 
-    /// <summary>Gets or sets the source location of the class the attribute is assigned to.</summary>
-    public Location? SourceLocation { get; set; }
+    /// <summary>Gets a value indicating whether source must not be generated in generic style.</summary>
+    public bool DoNotGenerateAsGeneric { get; } = doNotGenerateAsGeneric;
+}
 
+/// <summary>DIRegistration extension methods.</summary>
+public static class DIRegistrationExtensions
+{
     /// <summary>Converts registration to source.</summary>
     /// <returns>A registration method call.</returns>
-    public string ToSource()
+    public static string ToSource(this DIRegistration registration)
     {
-        if (_source is not null)
-            return _source;
+        string method = registration.Method;
+        string serviceType = registration.ServiceType.ToSource();
+        string? implementationType = registration.ImplementationType?.ToSource();
+        bool doNotGenerateAsGeneric = registration.DoNotGenerateAsGeneric;
 
-        if (this.ImplementationType is not null
-            && this.ImplementationType.ToSource() != this.ServiceType.ToSource())
+        if (implementationType is not null && implementationType != serviceType)
             // [Add{Lifetime}(typeof(ServiceType), typeof(ImplementationType))]
             // or [Add{Lifetime}<ServiceType, ImplementationType>]
-            return _source = doNotShowAsGeneric
-                ? $"{Method}(typeof({ServiceType.ToSource()}), typeof({ImplementationType.ToSource()}))"
-                : $"{Method}<{ServiceType.ToSource()}, {ImplementationType.ToSource()}>()";
+            return doNotGenerateAsGeneric
+                ? $"{method}(typeof({serviceType}), typeof({implementationType}))"
+                : $"{method}<{serviceType}, {implementationType}>()";
 
         // [Add{Lifetime}(typeof(ServiceType), typeof(ImplementationType))]
         // or [Add{Lifetime}<ServiceType, ImplementationType>]
-        return _source = doNotShowAsGeneric
-            ? $"{Method}(typeof({ServiceType.ToSource()}))"
-            : $"{Method}<{ServiceType.ToSource()}>()";
+        return doNotGenerateAsGeneric
+            ? $"{method}(typeof({serviceType}))"
+            : $"{method}<{serviceType}>()";
     }
-    private string? _source;
 }

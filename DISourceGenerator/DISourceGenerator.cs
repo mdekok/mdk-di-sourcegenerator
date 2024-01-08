@@ -93,7 +93,9 @@ public class DISourceGenerator : IIncrementalGenerator
                 if (IsDIAttributeClass(attribute.AttributeClass)
                     && BuildDIRegistration(attribute, classType) is DIRegistration registration)
                 {
-                    registration.SourceLocation = syntax.Identifier.GetLocation();
+                    // syntax.Identifier.GetLocation();
+                    // source location of the class the attribute is assigned to.
+                    // Maybe use this in the future when adding diagnostics.
                     registrations.Add(registration);
                 }
             }
@@ -131,13 +133,13 @@ public class DISourceGenerator : IIncrementalGenerator
         if (implementationType.IsDefined)
             // [Add{Lifetime}(typeof(ServiceType), typeof(ImplementationType))]
             // or [Add{Lifetime}<ServiceType, ImplementationType>]
-            return new(method, serviceType, implementationType, doNotShowAsGeneric: serviceType.IsUnboundGeneric);
+            return new(method, serviceType, implementationType, doNotGenerateAsGeneric: serviceType.IsUnboundGeneric);
 
         if (serviceType.IsDefined)
         {
             if (serviceType.IsUnboundGeneric)
                 // [Add{Lifetime}(typeof(ServiceType<>))]
-                return new(method, serviceType, classType, doNotShowAsGeneric: true);
+                return new(method, serviceType, classType, doNotGenerateAsGeneric: true);
 
             if (serviceType.IsGeneric)
                 // [Add{Lifetime}<ServiceType<int>>] or [Add{Lifetime}(typeof(ServiceType<int>))]
@@ -149,6 +151,6 @@ public class DISourceGenerator : IIncrementalGenerator
         }
 
         // [AddSingleton], [AddScoped] or [AddTransient]
-        return new(method, classType, doNotShowAsGeneric: classType.IsGeneric);
+        return new(method, classType, doNotGenerateAsGeneric: classType.IsGeneric);
     }
 }

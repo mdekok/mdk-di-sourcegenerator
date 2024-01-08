@@ -4,13 +4,10 @@ using Xunit.Abstractions;
 
 namespace Mdk.DISourceGenerator.UnitTests;
 
-public class DISourceGeneratorTests
+public class DISourceGeneratorTests(ITestOutputHelper output)
 {
-    public DISourceGeneratorTests(ITestOutputHelper output)
-        => this.output = output;
-
     private static readonly string assemblyName = Assembly.GetExecutingAssembly().GetName().Name!;
-    private readonly ITestOutputHelper output;
+    private readonly ITestOutputHelper output = output;
 
     [Theory]
     // Attribute without ServiceType or ImplementationType.
@@ -278,4 +275,31 @@ public class DISourceGeneratorTests
         Assert.Equal(expectedResult, output);
     }
 
+    [Fact]
+    public void MultipleAttributes_GeneratesMultipleRegistrations()
+    {
+        // Arrange
+        string input = $$$"""
+            using Mdk.DIAttributes;
+
+            namespace Library1;
+
+            public interface IInterface1 { }
+            public interface IInterface2 { }
+
+            [AddScoped<IInterface1>]
+            [AddScoped<IInterface2>]
+            public class MultipleInterfacedClass : IInterface1, IInterface2 { }
+            """;
+        string expectedResult = DISourceWriter.MergeRegistrationSourceCode(assemblyName, [
+            "AddScoped<global::Library1.IInterface1, global::Library1.MultipleInterfacedClass>()",
+            "AddScoped<global::Library1.IInterface2, global::Library1.MultipleInterfacedClass>()"],
+            []);
+
+        // Act
+        string? output = DISourceGeneratorCompiler.GetGeneratedOutput(input, assemblyName);
+
+        // Assert
+        Assert.Equal(expectedResult, output);
+    }
 }

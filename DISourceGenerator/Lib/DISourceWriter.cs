@@ -43,7 +43,6 @@ internal static class DISourceWriter
             }
 
             methodCalls.Add(registration.ToSource());
-
         }
         return methodCalls;
     }
@@ -61,7 +60,7 @@ internal static class DISourceWriter
     /// <param name="registerMethodCalls">The register method calls for registrations in this assembly.</param>
     /// <param name="assemblyMethodCalls">The assembly method calls for registrations of referenced assemblies.</param>
     /// <returns>The dependency injection source code.</returns>
-    internal static string MergeRegistrationSourceCode(string assemblyName, IEnumerable<string?> registerMethodCalls, IEnumerable<string> assemblyMethodCalls)
+    internal static string MergeRegistrationSourceCode(string assemblyName, IEnumerable<string?>? registerMethodCalls = null, IEnumerable<string>? assemblyMethodCalls = null)
     {
         using StringWriter source = new();
 
@@ -84,22 +83,28 @@ internal static class DISourceWriter
         source.WriteLine("            return services;");
         source.WriteLine();
 
-        foreach (string assemblyMethodCall in assemblyMethodCalls)
+        if (assemblyMethodCalls is not null)
         {
-            source.WriteLine($"        {assemblyMethodCall};");
-        }
-        if (assemblyMethodCalls.Any())
-        {
-            source.WriteLine();
+            foreach (string assemblyMethodCall in assemblyMethodCalls)
+            {
+                source.WriteLine($"        {assemblyMethodCall};");
+            }
+            if (assemblyMethodCalls.Any())
+            {
+                source.WriteLine();
+            }
         }
 
-        foreach (string? methodCall in registerMethodCalls)
+        if (registerMethodCalls is not null)
         {
-            source.WriteLine(methodCall is not null ? $"        services.{methodCall};" : null);
-        }
-        if (registerMethodCalls.Any())
-        {
-            source.WriteLine();
+            foreach (string? methodCall in registerMethodCalls)
+            {
+                source.WriteLine(methodCall is not null ? $"        services.{methodCall};" : null);
+            }
+            if (registerMethodCalls.Any())
+            {
+                source.WriteLine();
+            }
         }
 
         source.WriteLine($"        {registeredServicesFieldName} = true;");

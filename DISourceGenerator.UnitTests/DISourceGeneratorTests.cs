@@ -4,6 +4,9 @@ using Xunit.Abstractions;
 
 namespace Mdk.DISourceGenerator.UnitTests;
 
+#pragma warning disable MethodDocumentationHeader // The method must have a documentation header.
+#pragma warning disable ClassDocumentationHeader // The class must have a documentation header.
+
 public class DISourceGeneratorTests(ITestOutputHelper output)
 {
     private static readonly string assemblyName = Assembly.GetExecutingAssembly().GetName().Name!;
@@ -73,7 +76,7 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
                 string Greet();
             }
             """;
-        string expectedOutputSource = DISourceWriter.MergeRegistrationSourceCode(assemblyName, [generatedSource], []);
+        string expectedOutputSource = DISourceWriter.MergeRegistrationSourceCode(assemblyName, [generatedSource]);
 
         // Act
         string? outputSource = DISourceGeneratorCompiler.GetGeneratedOutput(inputSource, assemblyName);
@@ -108,10 +111,10 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
     [InlineData("B42", "[AddScoped<Library1.GenericType<int>>]", "AddScoped<global::Library1.GenericType<int>>()")]
     [InlineData("B43", "[AddTransient<Library1.GenericType<int>>]", "AddTransient<global::Library1.GenericType<int>>()")]
 
-    // Attribute with bound generic ServiceType.
-    [InlineData("B51", "[AddSingleton<Library1.IGenericType<int>>]", "AddSingleton<global::Library1.IGenericType<int>, global::Library1.GenericType<int>>()", Skip = "To be implemented")]
-    [InlineData("B52", "[AddScoped<Library1.IGenericType<int>>]", "AddScoped<global::Library1.IGenericType<int>, global::Library1.GenericType<int>>()", Skip = "To be implemented")]
-    [InlineData("B53", "[AddTransient<Library1.IGenericType<int>>]", "AddTransient<global::Library1.IGenericType<int>, global::Library1.GenericType<int>>()", Skip = "To be implemented")]
+    // Attribute with bound generic ServiceType not supported.
+    [InlineData("B51", "[AddSingleton<Library1.IGenericType<int>>]")]
+    [InlineData("B52", "[AddScoped<Library1.IGenericType<int>>]")]
+    [InlineData("B53", "[AddTransient<Library1.IGenericType<int>>]")]
 
     // Attribute with bound generic ServiceType and ImplementationType.
     [InlineData("B61", "[AddSingleton<Library1.IGenericType<int>, Library1.GenericType<int>>]", "AddSingleton<global::Library1.IGenericType<int>, global::Library1.GenericType<int>>()")]
@@ -128,11 +131,11 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
     [InlineData("B82", "[AddScoped(typeof(Library1.IGenericType<int>), typeof(Library1.GenericType<int>))]", "AddScoped<global::Library1.IGenericType<int>, global::Library1.GenericType<int>>()")]
     [InlineData("B83", "[AddTransient(typeof(Library1.IGenericType<int>), typeof(Library1.GenericType<int>))]", "AddTransient<global::Library1.IGenericType<int>, global::Library1.GenericType<int>>()")]
 
-    public void DIAttributeWithGenericTypes_GeneratesRegistration(string code, string attribute, string generatedSource)
+    public void DIAttributeWithGenericTypes_GeneratesRegistration(string code, string attribute, string? generatedSource = null)
     {
         this.output.WriteLine(code);
         this.output.WriteLine(attribute);
-        this.output.WriteLine(generatedSource);
+        this.output.WriteLine(generatedSource ?? "null");
 
         // Arrange
         string inputSource = $$$"""
@@ -151,7 +154,7 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
                 T Value { get; set; }
             }
             """;
-        string expectedOutputSource = DISourceWriter.MergeRegistrationSourceCode(assemblyName, [generatedSource], []);
+        string expectedOutputSource = DISourceWriter.MergeRegistrationSourceCode(assemblyName, generatedSource is not null ? [generatedSource] : null);
 
         // Act
         string? outputSource = DISourceGeneratorCompiler.GetGeneratedOutput(inputSource, assemblyName);
@@ -212,7 +215,7 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
 
             public interface IGenericType<T, U> { }
             """;
-        string expectedOutputSource = DISourceWriter.MergeRegistrationSourceCode(assemblyName, [generatedSource], []);
+        string expectedOutputSource = DISourceWriter.MergeRegistrationSourceCode(assemblyName, [generatedSource]);
 
         // Act
         string? outputSource = DISourceGeneratorCompiler.GetGeneratedOutput(inputSource, assemblyName);
@@ -292,8 +295,7 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
             """;
         string expectedResult = DISourceWriter.MergeRegistrationSourceCode(assemblyName, [
             "AddScoped<global::Library1.IInterface1, global::Library1.MultipleInterfacedClass>()",
-            "AddScoped<global::Library1.IInterface2, global::Library1.MultipleInterfacedClass>()"],
-            []);
+            "AddScoped<global::Library1.IInterface2, global::Library1.MultipleInterfacedClass>()"]);
 
         // Act
         string? output = DISourceGeneratorCompiler.GetGeneratedOutput(input, assemblyName);

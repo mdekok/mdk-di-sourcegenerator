@@ -91,11 +91,9 @@ public class DISourceGenerator : IIncrementalGenerator
             foreach (AttributeData attribute in classSymbol.GetAttributes())
             {
                 if (IsDIAttributeClass(attribute.AttributeClass)
-                    && BuildDIRegistration(attribute, classType) is DIRegistration registration)
+                    && BuildDIRegistration(attribute, classType) is DIRegistration registration
+                    && DIRegistrationValidator.Validate(registration, context, syntax))
                 {
-                    // syntax.Identifier.GetLocation();
-                    // source location of the class the attribute is assigned to.
-                    // Maybe use this in the future when adding diagnostics.
                     registrations.Add(registration);
                 }
             }

@@ -39,11 +39,14 @@ internal abstract class DIAttributePart(AttributeData attribute) : IDIPart
     /// <summary>Gets a value indicating whether the parameter is defined on the DIAttribute.</summary>
     public bool IsDefined => this.AttributeParameterType is not null;
 
-    /// <summary>Gets a value indicating whether the parameter is a unbound generic type.</summary>
-    public bool IsUnboundGeneric => this.AttributeParameterType?.IsUnboundGenericType ?? false;
+    /// <inheritdoc />
+    public TypeKind TypeKind => this.AttributeParameterType?.TypeKind ?? TypeKind.Unknown;
 
     /// <inheritdoc />
     public bool IsGeneric => this.AttributeParameterType?.IsGenericType ?? false;
+
+    /// <inheritdoc />
+    public bool IsUnboundGeneric => this.AttributeParameterType?.IsUnboundGenericType ?? false;
 
     /// <inheritdoc />
     public string ToSource()

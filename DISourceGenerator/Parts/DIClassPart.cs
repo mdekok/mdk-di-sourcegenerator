@@ -2,13 +2,17 @@
 
 namespace Mdk.DISourceGenerator.Parts;
 
-/// <summary>
-/// DI part of the class the DIAttribute is assigned to.
-/// </summary>
+/// <summary>DI part of the class the DIAttribute is assigned to.</summary>
 internal class DIClassPart(INamedTypeSymbol classType) : IDIPart
 {
     /// <inheritdoc />
+    public TypeKind TypeKind => classType.TypeKind;
+
+    /// <inheritdoc />
     public bool IsGeneric => classType.IsGenericType;
+
+    /// <inheritdoc />
+    public bool IsUnboundGeneric => classType.IsUnboundGenericType;
 
     /// <inheritdoc />
     public string ToSource()

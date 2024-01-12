@@ -5,10 +5,7 @@
 		<Nullable>enable</Nullable>
 		<LangVersion>latest</LangVersion>
 		<IsPackable>false</IsPackable>
-
-		<!-- Avoid ID conflicts with the package project. -->
-		<PackageId>*$(MSBuildProjectFile)*</PackageId>
-		<Version>1.0.1</Version>
+		<PackageId>Mdk.$(AssemblyName)</PackageId>
 	</PropertyGroup>
 
 	<ItemGroup>

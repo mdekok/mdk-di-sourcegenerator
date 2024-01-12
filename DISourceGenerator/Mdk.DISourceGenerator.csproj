@@ -7,7 +7,7 @@
 		<IsRoslynComponent>true</IsRoslynComponent>
 		<Nullable>enable</Nullable>
 		<LangVersion>latest</LangVersion>
-		<Version>1.2.0-alpha.2</Version>
+		<Version>1.2.0-alpha.3</Version>
 		<Authors>Michel de Kok</Authors>
 		<Company>Michel de Kok Software Engineering</Company>
 		<RepositoryUrl>https://github.com/mdekok/mdk-di-sourcegenerator</RepositoryUrl>
@@ -40,9 +40,7 @@
 
 	<!-- Analyzers -->
 	<ItemGroup>
-		<ProjectReference Include="..\Analyzer\DISourceGeneratorAnalyzer\DISourceGeneratorAnalyzer\DISourceGeneratorAnalyzer.csproj" OutputItemType="Analyzer" />
 		<None Update="tools\*.ps1" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath="" />
-		<None Include="$(OutputPath)\DISourceGeneratorAnalyzer.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
 	</ItemGroup>
 
 	<!--<ItemGroup>

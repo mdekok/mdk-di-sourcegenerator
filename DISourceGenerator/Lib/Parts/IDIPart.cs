@@ -1,10 +1,13 @@
 ﻿using Microsoft.CodeAnalysis;
 
-namespace Mdk.DISourceGenerator.Parts;
+namespace Mdk.DISourceGenerator.Lib.Parts;
 
 /// <summary>The DIPart interface implemented by the class, service and implementation type.</summary>
 public interface IDIPart
 {
+    /// <summary>Gets the symbol of the DI part.</summary>
+    INamedTypeSymbol? NamedTypeSymbol { get; }
+
     /// <summary>Gets the kind of the type this part is (Class, Interface, ...).</summary>
     TypeKind TypeKind { get; }
 

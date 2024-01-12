@@ -2,10 +2,8 @@
 
 namespace DevConsoleApp.Services;
 
-public interface IInterface1 { }
+[AddScoped<IDummyInterface>]
+public class RegisterInterfaceMultipleTimes1 : IDummyInterface { }
 
-[AddScoped<IInterface1>]
-public class RegisterInterfaceMultipleTimes1 : IInterface1 { }
-
-[AddScoped<IInterface1>]
-public class RegisterInterfaceMultipleTimes2 : IInterface1 { }
+[AddScoped<IDummyInterface>]
+public class RegisterInterfaceMultipleTimes2 : IDummyInterface { }

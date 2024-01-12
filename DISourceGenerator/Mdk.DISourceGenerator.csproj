@@ -7,7 +7,7 @@
 		<IsRoslynComponent>true</IsRoslynComponent>
 		<Nullable>enable</Nullable>
 		<LangVersion>latest</LangVersion>
-		<Version>1.1.0</Version>
+		<Version>1.2.0-alpha</Version>
 		<Authors>Michel de Kok</Authors>
 		<Company>Michel de Kok Software Engineering</Company>
 		<RepositoryUrl>https://github.com/mdekok/mdk-di-sourcegenerator</RepositoryUrl>
@@ -17,7 +17,7 @@
 		<PackageProjectUrl>https://github.com/mdekok/mdk-di-sourcegenerator</PackageProjectUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<PackageTags>DI;Dependency Injection;Attributes;Reflection;Incremental;Source;Generator</PackageTags>
+		<PackageTags>DI;Dependency Injection;Attributes;Reflection;Incremental;Source;Generator;Analyzer</PackageTags>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -33,8 +33,21 @@
 		<None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
 	</ItemGroup>
 
+	<!-- Unit testing -->
 	<ItemGroup>
 		<InternalsVisibleTo Include="$(AssemblyName).UnitTests" />
 	</ItemGroup>
 
-</Project>
+	<!-- Analyzers -->
+	<ItemGroup>
+		<ProjectReference Include="..\Analyzer\DISourceGeneratorAnalyzer\DISourceGeneratorAnalyzer\DISourceGeneratorAnalyzer.csproj" />
+		<None Update="tools\*.ps1" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath="" />
+		<None Include="$(OutputPath)\DISourceGeneratorAnalyzer.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+	</ItemGroup>
+
+	<!--<ItemGroup>
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="2.2.0" PrivateAssets="all" />
+		<PackageReference Update="NETStandard.Library" PrivateAssets="all" />
+	</ItemGroup>-->
+
+</Project>	

@@ -4,8 +4,9 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using Mdk.DISourceGenerator.Parts;
 using Mdk.DISourceGenerator.Lib;
+using Mdk.DISourceGenerator.Validation;
+using Mdk.DISourceGenerator.Lib.Parts;
 
 namespace Mdk.DISourceGenerator;
 
@@ -80,19 +81,20 @@ public class DISourceGenerator : IIncrementalGenerator
 
         List<DIRegistration> registrations = [];
 
-        foreach (ClassDeclarationSyntax syntax in classDeclarationSyntaxList)
+        foreach (ClassDeclarationSyntax classDeclarationSyntax in classDeclarationSyntaxList)
         {
-            SemanticModel model = compilation.GetSemanticModel(syntax.SyntaxTree);
-            if (model.GetDeclaredSymbol(syntax) is not INamedTypeSymbol classSymbol)
+            SemanticModel model = compilation.GetSemanticModel(classDeclarationSyntax.SyntaxTree);
+            if (model.GetDeclaredSymbol(classDeclarationSyntax) is not INamedTypeSymbol classSymbol)
                 continue;
 
             DIClassPart classType = new(classSymbol);
+            SourceContext sourceContext = new(context, classDeclarationSyntax, classSymbol);
 
             foreach (AttributeData attribute in classSymbol.GetAttributes())
             {
                 if (IsDIAttributeClass(attribute.AttributeClass)
-                    && BuildDIRegistration(attribute, classType) is DIRegistration registration
-                    && DIRegistrationValidator.Validate(registration, context, syntax))
+                    && DIRegistrationBuilder.Build(attribute, classType) is DIRegistration registration
+                    && DIRegistrationValidator.Validate(registration, sourceContext))
                 {
                     registrations.Add(registration);
                 }
@@ -113,42 +115,21 @@ public class DISourceGenerator : IIncrementalGenerator
         context.AddSource($"DISourceGenerator.{compilation.AssemblyName}.g.cs",
             DISourceWriter.Write(assemblyName, registrations, referencedDIAssemblies));
     }
+}
 
-    /// <summary>Builds a record containing all DI registration data.</summary>
-    /// <param name="attribute">The DIAttribute.</param>
-    /// <param name="classType">The class type the DIAttribute is assigned to.</param>
-    /// <returns>A nullable DIRegistration record.</returns>
-    private static DIRegistration? BuildDIRegistration(AttributeData attribute, DIClassPart classType)
+public readonly struct SourceContext
+{
+    public SourceContext(
+        SourceProductionContext context,
+        ClassDeclarationSyntax classDeclarationSyntax,
+        INamedTypeSymbol classSymbol)
     {
-        if (attribute.AttributeClass is not INamedTypeSymbol attributeClass)
-            return null;
-
-        string method = attributeClass.Name; // AddSingleton, AddScoped or AddTransient.
-
-        var serviceType = new DIServicePart(attribute);
-        var implementationType = new DIImplementationPart(attribute);
-
-        if (implementationType.IsDefined)
-            // [Add{Lifetime}(typeof(ServiceType), typeof(ImplementationType))]
-            // or [Add{Lifetime}<ServiceType, ImplementationType>]
-            return new(method, serviceType, implementationType, doNotGenerateAsGeneric: serviceType.IsUnboundGeneric);
-
-        if (serviceType.IsDefined)
-        {
-            if (serviceType.IsUnboundGeneric)
-                // [Add{Lifetime}(typeof(ServiceType<>))]
-                return new(method, serviceType, classType, doNotGenerateAsGeneric: true);
-
-            if (serviceType.IsGeneric)
-                // [Add{Lifetime}<ServiceType<int>>] or [Add{Lifetime}(typeof(ServiceType<int>))]
-                return classType.IsGeneric
-                    ? new(method, serviceType)
-                    : new(method, serviceType, classType);
-
-            return new(method, serviceType, classType);
-        }
-
-        // [AddSingleton], [AddScoped] or [AddTransient]
-        return new(method, classType, doNotGenerateAsGeneric: classType.IsGeneric);
+        this.Context = context;
+        this.ClassDeclarationSyntax = classDeclarationSyntax;
+        this.ClassSymbol = classSymbol;
     }
+
+    public SourceProductionContext Context { get; }
+    public ClassDeclarationSyntax ClassDeclarationSyntax { get; }
+    public INamedTypeSymbol ClassSymbol { get; }
 }

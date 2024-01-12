@@ -4,12 +4,16 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Mdk.DISourceGenerator;
 
+/// <summary>Dependency injection registrations for BusinessLogic.</summary>
 public static partial class DIRegistrations
 {
+    /// <summary>Registers the services for BusinessLogic and referenced assemblies.</summary>
     public static IServiceCollection RegisterServicesBusinessLogic(this IServiceCollection services)
     {
         if (registeredServicesBusinessLogic)
             return services;
+
+        services.RegisterServicesBusinessBaseLogic();
 
         services.AddScoped<global::BusinessLogic.IInterface1, global::BusinessLogic.MyInterfacedService>();
         services.AddScoped(typeof(global::BusinessLogic.IInterface2<>), typeof(global::BusinessLogic.MyInterfacedGenericService<>));
@@ -18,8 +22,6 @@ public static partial class DIRegistrations
         services.AddScoped<global::BusinessLogic.IInterface4, global::BusinessLogic.MyDoubleInterfacedService>();
         services.AddScoped(typeof(global::BusinessLogic.MyGenericService<>));
         services.AddScoped<global::BusinessLogic.MyService>();
-
-        services.RegisterServicesBusinessBaseLogic();
 
         registeredServicesBusinessLogic = true;
 

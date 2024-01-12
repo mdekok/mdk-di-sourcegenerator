@@ -1,4 +1,4 @@
-﻿using Mdk.DISourceGenerator.Parts;
+﻿using Mdk.DISourceGenerator.Lib.Parts;
 
 namespace Mdk.DISourceGenerator.Lib;
 

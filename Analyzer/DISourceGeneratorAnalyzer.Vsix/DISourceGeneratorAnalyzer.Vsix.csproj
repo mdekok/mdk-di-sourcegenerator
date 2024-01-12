@@ -33,15 +33,12 @@
 	<Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="Exists('$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets')" />
 
 	<ItemGroup>
-		<ProjectReference Include="..\DISourceGeneratorAnalyzer\DISourceGeneratorAnalyzer.csproj" />
+		<ProjectReference Include="..\..\DISourceGenerator\Mdk.DISourceGenerator.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<!-- https://github.com/dotnet/sdk/issues/433 -->
 		<ProjectReference Update="@(ProjectReference)" AdditionalProperties="TargetFramework=netstandard2.0" />
-		<ProjectReference Update="..\..\..\Mdk.DISourceGenerator.Shared\Mdk.DISourceGenerator.Shared.csproj">
-			<Private>True</Private>
-		</ProjectReference>
 
 		<!-- https://github.com/Microsoft/extendvs/issues/57 -->
 		<ProjectReference Update="@(ProjectReference)" Name="%(Filename)" />

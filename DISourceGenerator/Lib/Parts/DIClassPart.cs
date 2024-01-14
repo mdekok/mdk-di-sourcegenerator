@@ -14,7 +14,7 @@ public class DIClassPart(INamedTypeSymbol classType) : DIPart
         if (_source is not null)
             return _source;
 
-        string? unboundGenericPart = this.IsGeneric
+        string? unboundGenericPart = this.IsGenericType
             ? $"<{new string(',', classType.TypeArguments.Length - 1)}>"
             : null;
 

@@ -8,39 +8,40 @@ public static class DIRegistrationBuilder
 {
     /// <summary>Builds a <seealso cref="DIRegistration"/> record containing all DI registration data.</summary>
     /// <param name="attribute">The DIAttribute.</param>
-    /// <param name="classType">The class type the DIAttribute is assigned to.</param>
+    /// <param name="classSymbol">The class syntax the DIAttribute is assigned to.</param>
     /// <returns>A nullable DIRegistration record.</returns>
-    public static DIRegistration? Build(AttributeData attribute, DIClassPart classType)
+    public static DIRegistration? Build(AttributeData attribute, INamedTypeSymbol classSymbol)
     {
         if (attribute.AttributeClass is not INamedTypeSymbol attributeClass)
             return null;
 
         string method = attributeClass.Name; // AddSingleton, AddScoped or AddTransient.
 
-        var serviceType = new DIServicePart(attribute);
-        var implementationType = new DIImplementationPart(attribute);
+        DIClassPart classType = new(classSymbol);
+        DIServicePart serviceType = new(attribute);
+        DIImplementationPart implementationType = new(attribute);
 
         if (implementationType.IsDefined)
             // [Add{Lifetime}(typeof(ServiceType), typeof(ImplementationType))]
             // or [Add{Lifetime}<ServiceType, ImplementationType>]
-            return new(method, serviceType, implementationType, doNotGenerateAsGeneric: serviceType.IsUnboundGeneric);
+            return new(method, classType, serviceType, implementationType, doNotGenerateAsGeneric: serviceType.IsUnboundGenericType);
 
         if (serviceType.IsDefined)
         {
-            if (serviceType.IsUnboundGeneric)
+            if (serviceType.IsUnboundGenericType)
                 // [Add{Lifetime}(typeof(ServiceType<>))]
-                return new(method, serviceType, classType, doNotGenerateAsGeneric: true);
+                return new(method, classType, serviceType, classType, doNotGenerateAsGeneric: true);
 
-            if (serviceType.IsGeneric)
+            if (serviceType.IsGenericType)
                 // [Add{Lifetime}<ServiceType<int>>] or [Add{Lifetime}(typeof(ServiceType<int>))]
-                return classType.IsGeneric
-                    ? new(method, serviceType)
-                    : new(method, serviceType, classType);
+                return classType.IsGenericType
+                    ? new(method, classType, serviceType)
+                    : new(method, classType, serviceType, classType);
 
-            return new(method, serviceType, classType);
+            return new(method, classType, serviceType, classType);
         }
 
         // [AddSingleton], [AddScoped] or [AddTransient]
-        return new(method, classType, doNotGenerateAsGeneric: classType.IsGeneric);
+        return new(method, classType, classType, doNotGenerateAsGeneric: classType.IsGenericType);
     }
 }

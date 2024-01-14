@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using Mdk.DISourceGenerator.Lib;
-using Mdk.DISourceGenerator.Validation;
-using Mdk.DISourceGenerator.Lib.Parts;
 
 namespace Mdk.DISourceGenerator;
 
@@ -87,14 +85,11 @@ public class DISourceGenerator : IIncrementalGenerator
             if (model.GetDeclaredSymbol(classDeclarationSyntax) is not INamedTypeSymbol classSymbol)
                 continue;
 
-            DIClassPart classType = new(classSymbol);
-            SourceContext sourceContext = new(context, classDeclarationSyntax, classSymbol);
-
             foreach (AttributeData attribute in classSymbol.GetAttributes())
             {
                 if (IsDIAttributeClass(attribute.AttributeClass)
-                    && DIRegistrationBuilder.Build(attribute, classType) is DIRegistration registration
-                    && DIRegistrationValidator.Validate(registration, sourceContext))
+                    && DIRegistrationBuilder.Build(attribute, classSymbol) is DIRegistration registration
+                    && DIRegistrationValidator.Validate(registration))
                 {
                     registrations.Add(registration);
                 }
@@ -115,21 +110,4 @@ public class DISourceGenerator : IIncrementalGenerator
         context.AddSource($"DISourceGenerator.{compilation.AssemblyName}.g.cs",
             DISourceWriter.Write(assemblyName, registrations, referencedDIAssemblies));
     }
-}
-
-public readonly struct SourceContext
-{
-    public SourceContext(
-        SourceProductionContext context,
-        ClassDeclarationSyntax classDeclarationSyntax,
-        INamedTypeSymbol classSymbol)
-    {
-        this.Context = context;
-        this.ClassDeclarationSyntax = classDeclarationSyntax;
-        this.ClassSymbol = classSymbol;
-    }
-
-    public SourceProductionContext Context { get; }
-    public ClassDeclarationSyntax ClassDeclarationSyntax { get; }
-    public INamedTypeSymbol ClassSymbol { get; }
 }

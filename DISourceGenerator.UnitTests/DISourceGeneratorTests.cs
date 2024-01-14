@@ -112,9 +112,9 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
     [InlineData("B43", "[AddTransient<Library1.GenericType<int>>]", "AddTransient<global::Library1.GenericType<int>>()")]
 
     // Attribute with bound generic ServiceType not supported.
-    [InlineData("B51", "[AddSingleton<Library1.IGenericType<int>>]", Skip = "Unskip")]
-    [InlineData("B52", "[AddScoped<Library1.IGenericType<int>>]", Skip = "Unskip")]
-    [InlineData("B53", "[AddTransient<Library1.IGenericType<int>>]", Skip = "Unskip")]
+    [InlineData("B51", "[AddSingleton<Library1.IGenericType<int>>]")]
+    [InlineData("B52", "[AddScoped<Library1.IGenericType<int>>]")]
+    [InlineData("B53", "[AddTransient<Library1.IGenericType<int>>]")]
 
     // Attribute with bound generic ServiceType and ImplementationType.
     [InlineData("B61", "[AddSingleton<Library1.IGenericType<int>, Library1.GenericType<int>>]", "AddSingleton<global::Library1.IGenericType<int>, global::Library1.GenericType<int>>()")]
@@ -304,15 +304,37 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
         Assert.Equal(expectedResult, output);
     }
 
-
-    [Fact(Skip = "Unskip")]
-    public void ClassDoesNotImplementInterface_GeneratesNoRegistration()
+    [Fact]
+    public void DI0001_GeneratesNoRegistration()
     {
         // Arrange
         string input = $$$"""
             using Mdk.DIAttributes;
 
-            namespace Library1;
+            namespace ns;
+
+            public interface IInterface<T> { }
+
+            [AddScoped<IInterface<int>>]
+            public class GenericType<T> : IInterface<T> { }
+            """;
+        string expectedOutputSource = DISourceWriter.MergeRegistrationSourceCode(assemblyName);
+
+        // Act
+        string? outputSource = DISourceGeneratorCompiler.GetGeneratedOutput(input, assemblyName);
+
+        // Assert
+        Assert.Equal(expectedOutputSource, outputSource);
+    }
+
+    [Fact]
+    public void DI0002_GeneratesNoRegistration()
+    {
+        // Arrange
+        string input = $$$"""
+            using Mdk.DIAttributes;
+
+            namespace ns;
 
             public interface IInterface { }
 
@@ -327,6 +349,32 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
         // Assert
         Assert.Equal(expectedOutputSource, outputSource);
     }
+
+    [Fact]
+    public void DI0003_GeneratesNoRegistration()
+    {
+        // Arrange
+        string input = $$$"""
+            using Mdk.DIAttributes;
+
+            namespace ns;
+
+            [AddScoped<IInterface, Implementation>]
+            internal class DI0003 { }
+
+            public interface IInterface { }
+
+            internal class Implementation : IInterface { }
+            """;
+        string expectedResult = DISourceWriter.MergeRegistrationSourceCode(assemblyName);
+
+        // Act
+        string? output = DISourceGeneratorCompiler.GetGeneratedOutput(input, assemblyName);
+
+        // Assert
+        Assert.Equal(expectedResult, output);
+    }
+
 
     [Fact]
     public void ClassWithInheritedInterface_GeneratesRegistration()

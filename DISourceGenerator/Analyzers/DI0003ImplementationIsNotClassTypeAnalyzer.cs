@@ -1,5 +1,6 @@
 ﻿using Mdk.DISourceGenerator.Analyzers.Lib;
 using Mdk.DISourceGenerator.Lib;
+using Mdk.DISourceGenerator.Lib.Parts;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
@@ -13,7 +14,7 @@ public class DI0003ImplementationIsNotClassTypeAnalyzer : DIAnalyzerBase
     protected override DiagnosticDescriptor BuildRule() => new(
         "DI0003",
         "Implementation type is not the same as class type",
-        "Implementation type '{0}' is not the same as class type '{1}'",
+        "Implementation type '{0}' is not the same as class type '{1}': Move attribute to class '{0}'",
         Constants.DiagnosticCategory,
         DiagnosticSeverity.Error,
         true);
@@ -28,11 +29,9 @@ public class DI0003ImplementationIsNotClassTypeAnalyzer : DIAnalyzerBase
         // class ClassType {}
         // ImplementationType should be (base class of) ClassType.
 
-        if (registration.ImplementationType is null)
-            return ValidationResult.NoDiagnostic;
-
-        if (!registration.ImplementationType.IsGenericType // just test simple classes
-            && !registration.ImplementationType.Equals(registration.ClassType))
+        if (registration.ImplementationType is IDIPart implementationType
+            && !implementationType.IsGenericType // just test simple classes
+            && !implementationType.Equals(registration.ClassType))
         {
             return new(true, false);
         }

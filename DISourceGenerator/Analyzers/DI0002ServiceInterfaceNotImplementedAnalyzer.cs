@@ -1,5 +1,6 @@
 ﻿using Mdk.DISourceGenerator.Analyzers.Lib;
 using Mdk.DISourceGenerator.Lib;
+using Mdk.DISourceGenerator.Lib.Parts;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using System.Linq;
@@ -14,7 +15,7 @@ public class DI0002ServiceInterfaceNotImplementedAnalyzer : DIAnalyzerBase
     protected override DiagnosticDescriptor BuildRule() => new(
         "DI0002",
         "Interface missing on class",
-        "Class '{0}' does not implement registered interface '{1}'",
+        "Interface missing on class: Add interface '{0}' to Class '{1}' as expected from DI attribute",
         Constants.DiagnosticCategory,
         DiagnosticSeverity.Error,
         true);
@@ -28,15 +29,13 @@ public class DI0002ServiceInterfaceNotImplementedAnalyzer : DIAnalyzerBase
         // [Add{Lifetime}<Interface>]
         // class Implementation { } // Implementation must implement Interface.
 
-        if (registration.ServiceType is null)
-            return ValidationResult.NoDiagnostic;
-
-        if (registration.ServiceType.TypeKind == TypeKind.Interface
-            && !registration.ServiceType.IsGenericType // just test simple interfaces
+        if (registration.ServiceType is IDIPart serviceType
+            && serviceType.TypeKind == TypeKind.Interface
+            && !serviceType.IsGenericType // just test simple interfaces
             && !registration
                 .ClassType
                 .AllInterfaces
-                .Any(interfaceType => interfaceType.Equals(registration.ServiceType.NamedTypeSymbol, SymbolEqualityComparer.Default)))
+                .Any(interfaceType => interfaceType.Equals(serviceType.NamedTypeSymbol, SymbolEqualityComparer.Default)))
             return new(true, false);
 
         return ValidationResult.NoDiagnostic;
@@ -45,5 +44,5 @@ public class DI0002ServiceInterfaceNotImplementedAnalyzer : DIAnalyzerBase
     /// <inheritdoc/>
     public override Diagnostic BuildDiagnostic(DIRegistration registration)
         => Diagnostic.Create(Rule, registration.ClassType.NamedTypeSymbol?.Locations[0],
-            registration.ClassType.Name, registration.ServiceType?.Name);
+            registration.ServiceType?.Name, registration.ClassType.Name);
 }

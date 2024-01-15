@@ -1,5 +1,6 @@
 ﻿using Mdk.DISourceGenerator.Analyzers.Lib;
 using Mdk.DISourceGenerator.Lib;
+using Mdk.DISourceGenerator.Lib.Parts;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
@@ -12,8 +13,8 @@ public class DI0001ImplementationTypeMissingAnalyzer : DIAnalyzerBase
     /// <inheritdoc/>
     protected override DiagnosticDescriptor BuildRule() => new(
         "DI0001",
-        "Implementation type missing",
-        "Add the implementation type to the attribute, like [AddScoped<Interface, Implementation>]",
+        "Implementation type missing in DI attribute",
+        "Implementation type missing in DI attribute: Add the implementation type like [{0}<Interface, Implementation>]",
         Constants.DiagnosticCategory,
         DiagnosticSeverity.Error,
         true);
@@ -28,14 +29,12 @@ public class DI0001ImplementationTypeMissingAnalyzer : DIAnalyzerBase
         // is not allowed if service type is bound generic interface and class type is generic.
         // should be [Add{Lifetime}<ServiceType<int>, ImplementationType>].
 
-        if (registration.ServiceType is null)
-            return ValidationResult.NoDiagnostic;
-
-        if (registration.ServiceType.TypeKind == TypeKind.Interface
-            && registration.ServiceType.IsGenericType
-            && !registration.ServiceType.IsUnboundGenericType
-            && registration.ClassType.IsGenericType
-            && registration.ImplementationType is null)
+        if (registration.ImplementationType is null
+            && registration.ServiceType is IDIPart serviceType
+            && serviceType.TypeKind == TypeKind.Interface
+            && serviceType.IsGenericType
+            && !serviceType.IsUnboundGenericType
+            && registration.ClassType.IsGenericType)
             return new(true, false);
 
         return ValidationResult.NoDiagnostic;
@@ -43,5 +42,6 @@ public class DI0001ImplementationTypeMissingAnalyzer : DIAnalyzerBase
 
     /// <inheritdoc/>
     public override Diagnostic BuildDiagnostic(DIRegistration registration)
-        => Diagnostic.Create(Rule, registration.ClassType.NamedTypeSymbol?.Locations[0]);
+        => Diagnostic.Create(Rule, registration.ClassType.NamedTypeSymbol?.Locations[0],
+            registration.Method);
 }

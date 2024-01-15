@@ -15,9 +15,9 @@ public static partial class DIRegistrations
 
         services.RegisterServicesReferencedLibrary();
 
-        services.AddScoped<global::DevConsoleApp.Services.IGenericType<int>, global::DevConsoleApp.Services.GenericType<int>>();
-        services.AddScoped<global::DevConsoleApp.Services.IInterface1, global::DevConsoleApp.Services.RegisterInterfaceMultipleTimes1>();
-        services.AddScoped<global::DevConsoleApp.Services.IInterface1, global::DevConsoleApp.Services.RegisterInterfaceMultipleTimes2>();
+        services.AddScoped<global::DevConsoleApp.Services.IDummyInterface, global::DevConsoleApp.Services.RegisterInterfaceNotImplemented>();
+        services.AddScoped<global::DevConsoleApp.Services.IGenericType<int>, global::DevConsoleApp.Services.NonGenericType>();
+        services.AddScoped<global::DevConsoleApp.Services.IInterface, global::DevConsoleApp.Services.DI0003>();
 
         registeredServicesDevConsoleApp = true;
 

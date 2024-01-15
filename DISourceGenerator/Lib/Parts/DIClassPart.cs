@@ -1,26 +1,20 @@
 ﻿using Microsoft.CodeAnalysis;
 
-namespace Mdk.DISourceGenerator.Parts;
+namespace Mdk.DISourceGenerator.Lib.Parts;
 
 /// <summary>DI part of the class the DIAttribute is assigned to.</summary>
-internal class DIClassPart(INamedTypeSymbol classType) : IDIPart
+public class DIClassPart(INamedTypeSymbol classType) : DIPart
 {
     /// <inheritdoc />
-    public TypeKind TypeKind => classType.TypeKind;
+    public override INamedTypeSymbol? NamedTypeSymbol => classType;
 
     /// <inheritdoc />
-    public bool IsGeneric => classType.IsGenericType;
-
-    /// <inheritdoc />
-    public bool IsUnboundGeneric => classType.IsUnboundGenericType;
-
-    /// <inheritdoc />
-    public string ToSource()
+    public override string ToSource()
     {
         if (_source is not null)
             return _source;
 
-        string? unboundGenericPart = this.IsGeneric
+        string? unboundGenericPart = this.IsGenericType
             ? $"<{new string(',', classType.TypeArguments.Length - 1)}>"
             : null;
 

@@ -1,5 +1,6 @@
-﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+﻿using Mdk.DISourceGenerator.Analyzers;
+using Mdk.DISourceGenerator.Analyzers.Lib;
+using System.Collections.Generic;
 
 namespace Mdk.DISourceGenerator.Lib;
 
@@ -8,32 +9,26 @@ public static class DIRegistrationValidator
 {
     /// <summary>Validates a registration.</summary>
     /// <param name="registration">The registration.</param>
-    /// <param name="context">The source production context.</param>
-    /// <param name="syntax">The class declaration syntax.</param>
     /// <returns>A bool.</returns>
-    public static bool Validate(
-        DIRegistration registration,
-        SourceProductionContext context,
-        ClassDeclarationSyntax syntax)
+    public static bool Validate(DIRegistration registration)
     {
-        bool result = true;
-
-        // [Add{Lifetime}<ServiceType<int>>] is not allowed.
-        // should be [Add{Lifetime}<ServiceType<int>, ImplementationType>].
-        if (registration.ServiceType.TypeKind == TypeKind.Interface
-            && registration.ServiceType.IsGeneric
-            && !registration.ServiceType.IsUnboundGeneric
-            && registration.ImplementationType is null)
+        foreach (ValidationResult? validationResult in Validations(registration))
         {
-            result = false;
-            ReportDiagnostic(DiagnosticsDescriptors.MissingImplementationType);
+            if (validationResult is not null
+                && !validationResult.Value.CanGenerateSource)
+                return false;
         }
 
-        return result;
+        return true;
+    }
 
-        // Local function to report diagnostics.
-        void ReportDiagnostic(DiagnosticDescriptor descriptor, params object[] messageArgs)
-            => context.ReportDiagnostic(
-                Diagnostic.Create(descriptor, syntax.GetLocation(), messageArgs));
+    /// <summary>Validation results of an attribute.</summary>
+    /// <param name="registration">The DI registration (class, service and implementation type).</param>
+    /// <returns>Validation results.</returns>
+    public static IEnumerable<ValidationResult?> Validations(DIRegistration registration)
+    {
+        yield return DI0001ImplementationTypeMissingAnalyzer.Validate(registration);
+        yield return DI0002ServiceInterfaceNotImplementedAnalyzer.Validate(registration);
+        yield return DI0003ImplementationIsNotClassTypeAnalyzer.Validate(registration);
     }
 }

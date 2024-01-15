@@ -4,17 +4,19 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Mdk.DISourceGenerator;
 
+/// <summary>Dependency injection registrations for MinimalApi.</summary>
 public static partial class DIRegistrations
 {
+    /// <summary>Registers the services for MinimalApi and referenced assemblies.</summary>
     public static IServiceCollection RegisterServicesMinimalApi(this IServiceCollection services)
     {
         if (registeredServicesMinimalApi)
             return services;
 
-        services.AddScoped<global::MinimalApi.MinimalApiService>();
-
         services.RegisterServicesBusinessBaseLogic();
         services.RegisterServicesBusinessLogic();
+
+        services.AddScoped<global::MinimalApi.MinimalApiService>();
 
         registeredServicesMinimalApi = true;
 

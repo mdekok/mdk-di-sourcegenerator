@@ -4,8 +4,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Mdk.DISourceGenerator;
 
+/// <summary>Dependency injection registrations for BlazorApp.</summary>
 public static partial class DIRegistrations
 {
+    /// <summary>Registers the services for BlazorApp and referenced assemblies.</summary>
     public static IServiceCollection RegisterServicesBlazorApp(this IServiceCollection services)
     {
         if (registeredServicesBlazorApp)

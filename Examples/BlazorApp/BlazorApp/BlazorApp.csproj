@@ -9,7 +9,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\BusinessLogic\BusinessLogic.csproj" />
 		<ProjectReference Include="..\BlazorApp.Client\BlazorApp.Client.csproj" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.1" />
 	</ItemGroup>
 
 	<!-- Add generated files to source control. -->

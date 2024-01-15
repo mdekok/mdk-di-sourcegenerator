@@ -1,9 +1,9 @@
 ﻿using Microsoft.CodeAnalysis;
 
-namespace Mdk.DISourceGenerator.Parts;
+namespace Mdk.DISourceGenerator.Lib.Parts;
 
 /// <summary>DIAttributePart of the implementation type.</summary>
-internal class DIImplementationPart(AttributeData attribute)
+public class DIImplementationPart(AttributeData attribute)
     : DIAttributePart(attribute)
 {
     /// <inheritdoc />

@@ -269,7 +269,7 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
             [AddScoped]
             public class Greeter { }
             """;
- 
+
         // Act
         string? output = DISourceGeneratorCompiler.GetGeneratedOutput(input, assemblyName);
 
@@ -302,5 +302,103 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
 
         // Assert
         Assert.Equal(expectedResult, output);
+    }
+
+    [Fact]
+    public void DI0001_GeneratesNoRegistration()
+    {
+        // Arrange
+        string input = $$$"""
+            using Mdk.DIAttributes;
+
+            namespace ns;
+
+            public interface IInterface<T> { }
+
+            [AddScoped<IInterface<int>>]
+            public class GenericType<T> : IInterface<T> { }
+            """;
+        string expectedOutputSource = DISourceWriter.MergeRegistrationSourceCode(assemblyName);
+
+        // Act
+        string? outputSource = DISourceGeneratorCompiler.GetGeneratedOutput(input, assemblyName);
+
+        // Assert
+        Assert.Equal(expectedOutputSource, outputSource);
+    }
+
+    [Fact]
+    public void DI0002_GeneratesNoRegistration()
+    {
+        // Arrange
+        string input = $$$"""
+            using Mdk.DIAttributes;
+
+            namespace ns;
+
+            public interface IInterface { }
+
+            [AddScoped<IInterface>]
+            public class NonInterfacedClass { }
+            """;
+        string expectedOutputSource = DISourceWriter.MergeRegistrationSourceCode(assemblyName);
+
+        // Act
+        string? outputSource = DISourceGeneratorCompiler.GetGeneratedOutput(input, assemblyName);
+
+        // Assert
+        Assert.Equal(expectedOutputSource, outputSource);
+    }
+
+    [Fact]
+    public void DI0003_GeneratesNoRegistration()
+    {
+        // Arrange
+        string input = $$$"""
+            using Mdk.DIAttributes;
+
+            namespace ns;
+
+            [AddScoped<IInterface, Implementation>]
+            internal class DI0003 { }
+
+            public interface IInterface { }
+
+            internal class Implementation : IInterface { }
+            """;
+        string expectedResult = DISourceWriter.MergeRegistrationSourceCode(assemblyName);
+
+        // Act
+        string? output = DISourceGeneratorCompiler.GetGeneratedOutput(input, assemblyName);
+
+        // Assert
+        Assert.Equal(expectedResult, output);
+    }
+
+
+    [Fact]
+    public void ClassWithInheritedInterface_GeneratesRegistration()
+    {
+        // Arrange
+        string input = $$$"""
+            using Mdk.DIAttributes;
+
+            namespace Library1;
+
+            public interface IInterface { }
+
+            [AddScoped<IInterface>]
+            public class IndirectInterfacedClass : BaseClass { }
+
+            public class BaseClass: IInterface { }
+            """;
+        string expectedOutputSource = DISourceWriter.MergeRegistrationSourceCode(assemblyName,
+            ["AddScoped<global::Library1.IInterface, global::Library1.IndirectInterfacedClass>()"]);
+
+        // Act
+        string? outputSource = DISourceGeneratorCompiler.GetGeneratedOutput(input, assemblyName);
+
+        // Assert
+        Assert.Equal(expectedOutputSource, outputSource);
     }
 }

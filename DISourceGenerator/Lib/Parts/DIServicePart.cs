@@ -1,9 +1,9 @@
 ﻿using Microsoft.CodeAnalysis;
 
-namespace Mdk.DISourceGenerator.Parts;
+namespace Mdk.DISourceGenerator.Lib.Parts;
 
 /// <summary>DIAttributePart of the service type.</summary>
-internal class DIServicePart(AttributeData attribute)
+public class DIServicePart(AttributeData attribute)
     : DIAttributePart(attribute)
 {
     /// <inheritdoc />

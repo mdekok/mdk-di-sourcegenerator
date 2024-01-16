@@ -26,8 +26,8 @@ public class DI0003ImplementationIsNotClassTypeAnalyzer : DIAnalyzerBase
     public static ValidationResult Validate(DIRegistration registration)
     {
         // [Add{Lifetime}<ServiceType, ImplementationType>]
-        // class ClassType {}
-        // ImplementationType should be (base class of) ClassType.
+        // class ClassType : ServiceType { }
+        // Is not allowed if ImplementationType is not the same as ClassType.
 
         if (registration.ImplementationType is IDIPart implementationType
             && !implementationType.IsGenericType // just test simple classes

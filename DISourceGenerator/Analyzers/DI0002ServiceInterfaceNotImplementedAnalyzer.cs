@@ -27,7 +27,8 @@ public class DI0002ServiceInterfaceNotImplementedAnalyzer : DIAnalyzerBase
     public static ValidationResult Validate(DIRegistration registration)
     {
         // [Add{Lifetime}<Interface>]
-        // class Implementation { } // Implementation must implement Interface.
+        // class Implementation { }
+        // is not allowed, Implementation must implement Interface.
 
         if (registration.ServiceType is IDIPart serviceType
             && serviceType.TypeKind == TypeKind.Interface

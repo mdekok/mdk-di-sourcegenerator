@@ -157,7 +157,7 @@ This configuration is for all source generators in the project. Use git ignore t
 
 ## Analyzers
 The package also contains analyzers to help you use the attributes correctly.
-No registration is generated for classes with analyzers generating errors.
+No registration is generated for attributes for which analyzers generate errors.
 This prevents compiler errors in the generated code.
 
 ### DI0001: Implementation type missing on DI attribute
@@ -193,7 +193,7 @@ class Implementation : IInterface { }
 ```
 
 ### DI0003: Implementation type is not the same as class type
-If the implementation type is set on the attribute,
+If the implementation type is non generic and is set on the attribute,
 it must be the same as the class type.
 
 Severity: Error
@@ -203,6 +203,7 @@ Example:
 [AddScoped<IInterface, Implementation>]
 class ClassType : IInterface { }
 ```
+typeof(Implementation) == typeof(ClassType)
 
 ## References
 ### Articles

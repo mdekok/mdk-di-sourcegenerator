@@ -42,6 +42,7 @@ public class DI0001ImplementationTypeMissingAnalyzer : DIAnalyzerBase
 
     /// <inheritdoc/>
     public override Diagnostic BuildDiagnostic(DIRegistration registration)
-        => Diagnostic.Create(Rule, registration.ClassType.NamedTypeSymbol?.Locations[0],
+        => Diagnostic.Create(Rule,
+            registration.ClassType.NamedTypeSymbol?.Locations[0],
             registration.Method);
 }

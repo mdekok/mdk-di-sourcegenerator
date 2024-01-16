@@ -13,8 +13,8 @@ public class DI0001ImplementationTypeMissingAnalyzer : DIAnalyzerBase
     /// <inheritdoc/>
     protected override DiagnosticDescriptor BuildRule() => new(
         "DI0001",
-        "Implementation type missing in DI attribute",
-        "Implementation type missing in DI attribute: Add the implementation type like [{0}<Interface, Implementation>]",
+        "Implementation type missing on DI attribute",
+        "Implementation type missing on DI attribute: Add the implementation type like [{0}<Interface, Implementation>]",
         Constants.DiagnosticCategory,
         DiagnosticSeverity.Error,
         true);
@@ -25,9 +25,10 @@ public class DI0001ImplementationTypeMissingAnalyzer : DIAnalyzerBase
     /// <inheritdoc/>
     public static ValidationResult Validate(DIRegistration registration)
     {
-        // [Add{Lifetime}<ServiceType<int>>]
+        // [Add{Lifetime}<IGenericType<int>>]
+        // class GenericType<T>: IGenericType<T> { }
         // is not allowed if service type is bound generic interface and class type is generic.
-        // should be [Add{Lifetime}<ServiceType<int>, ImplementationType>].
+        // should be [Add{Lifetime}<IGenericType<int>, GenericType<int>>].
 
         if (registration.ImplementationType is null
             && registration.ServiceType is IDIPart serviceType

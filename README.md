@@ -22,6 +22,7 @@ The examples section of the [GitHub repository](https://github.com/mdekok/mdk-di
 - [Installation](#installation)
 - [Attribute usage](#attribute-usage)
 - [Generated source code](#generated-source-code)
+- [Analyzers](#analyzers)
 - [References](#references)
 
 ## Installation
@@ -138,7 +139,7 @@ In the Solution Explorer of Visual Studio generated source can be found in:
 
 You can make the generated source more visible in your project and even add the generated files to source control.
 Copy and paste following PropertyGroup and ItemGroup into the .csproj-file.
-~~~
+```
 <PropertyGroup>
   <!-- Save the generated DI registrations to file. -->
   <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
@@ -151,8 +152,57 @@ Copy and paste following PropertyGroup and ItemGroup into the .csproj-file.
   <!-- Include the persisted generated files in the project, so they are visible in the Solution Explorer. -->
   <None Include="$(CompilerGeneratedFilesOutputPath)/**/*.cs" />
 </ItemGroup>
-~~~
+```
 This configuration is for all source generators in the project. Use git ignore to prevent output of (other) source generators to be included in source control.
+
+## Analyzers
+The package also contains analyzers to help you use the attributes correctly.
+No registration is generated for classes with analyzers generating errors.
+This prevents compiler errors in the generated code.
+
+### DI0001: Implementation type missing on DI attribute
+If the service type is a bound generic type en the class type is generic as well, the implementation type is mandatory.
+
+Severity: Error
+
+Example:
+```
+[AddScoped<IGenericType<int>>]
+class GenericType<T> : IGenericType<T> { }
+```
+Should be:
+```
+[AddScoped<IGenericType<int>, GenericType<int>>]
+class GenericType<T> : IGenericType<T> { }
+```
+
+### DI0002: Interface missing on class
+If the service type is an interface, the class type must implement this interface.
+
+Severity: Error
+
+Example:
+```
+[AddScoped<IInterface>]
+class Implementation { }
+```
+Should be:
+```
+[AddScoped<IInterface>]
+class Implementation : IInterface { }
+```
+
+### DI0003: Implementation type is not the same as class type
+If the implementation type is set on the attribute,
+it must be the same as the class type.
+
+Severity: Error
+
+Example:
+```
+[AddScoped<IInterface, Implementation>]
+class ClassType : IInterface { }
+```
 
 ## References
 ### Articles

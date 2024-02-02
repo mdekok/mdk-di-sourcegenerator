@@ -205,6 +205,25 @@ class ClassType : IInterface { }
 ```
 typeof(Implementation) == typeof(ClassType)
 
+### DI0004: Class type is not the same as or subclass of service class type
+The class type must be the same as (or subclass of) the service type,
+if the service type is a non-generic class type.
+
+Severity: Error
+
+Example:
+```
+[AddScoped<SubClassType>]
+class ClassType { }
+class SubClassType { }
+```
+Should be:
+```
+[AddScoped<SubClassType>]
+class ClassType : SubClassType { }
+class SubClassType { }
+```
+
 ## References
 ### Articles
 - [Source Generators in C#](https://code-maze.com/csharp-source-generators/) by Code Maze

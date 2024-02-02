@@ -23,11 +23,30 @@ public abstract class DIPart : IDIPart
     public bool IsUnboundGenericType => this.NamedTypeSymbol?.IsUnboundGenericType ?? false;
 
     /// <inheritdoc />
+    public ImmutableArray<INamedTypeSymbol> BaseClasses
+    {
+        get
+        {
+            if (TypeKind != TypeKind.Class)
+                return new ImmutableArray<INamedTypeSymbol>();
+
+            ImmutableArray<INamedTypeSymbol>.Builder baseClasses = ImmutableArray.CreateBuilder<INamedTypeSymbol>();
+            INamedTypeSymbol? baseType = this.NamedTypeSymbol?.BaseType;
+            while (baseType is not null)
+            {
+                baseClasses.Add(baseType);
+                baseType = baseType.BaseType;
+            }
+            return baseClasses.ToImmutable();
+        }
+    }
+
+    /// <inheritdoc />
     public ImmutableArray<INamedTypeSymbol> AllInterfaces => this.NamedTypeSymbol?.AllInterfaces ?? new();
 
     /// <inheritdoc />
     public bool Equals(IDIPart other) => this.NamedTypeSymbol?.Equals(other.NamedTypeSymbol, SymbolEqualityComparer.Default) ?? false;
-  
+
     /// <inheritdoc />
     public abstract string ToSource();
 }

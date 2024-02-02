@@ -21,6 +21,9 @@ public interface IDIPart
     /// <summary>Gets a value indicating whether the DI part is a unbound generic type.</summary>
     bool IsUnboundGenericType { get; }
 
+    /// <summary>Gets the list of all (recursive) base classes if IDPart is class type.</summary>
+    ImmutableArray<INamedTypeSymbol> BaseClasses { get; }
+
     /// <summary>Gets the list of all interfaces.</summary>
     ImmutableArray<INamedTypeSymbol> AllInterfaces { get; }
 

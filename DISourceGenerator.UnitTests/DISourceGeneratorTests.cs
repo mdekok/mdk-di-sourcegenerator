@@ -375,6 +375,28 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
         Assert.Equal(expectedResult, output);
     }
 
+    [Fact]
+    public void DI0004_GeneratesNoRegistration()
+    {
+        // Arrange
+        string input = $$$"""
+            using Mdk.DIAttributes;
+
+            namespace ns;
+
+            [AddScoped<OtherClass>]
+            internal class DI0004 { }
+
+            internal class OtherClass { }
+            """;
+        string expectedResult = DISourceWriter.MergeRegistrationSourceCode(assemblyName);
+
+        // Act
+        string? output = DISourceGeneratorCompiler.GetGeneratedOutput(input, assemblyName);
+
+        // Assert
+        Assert.Equal(expectedResult, output);
+    }
 
     [Fact]
     public void ClassWithInheritedInterface_GeneratesRegistration()

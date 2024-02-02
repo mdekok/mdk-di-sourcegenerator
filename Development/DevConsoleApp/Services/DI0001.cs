@@ -3,7 +3,7 @@
 namespace DevConsoleApp.Services;
 
 // For testing diagnostic: DI001, Implementation type missing
-// [AddScoped<IGenericType<int>>]
+// [AddScoped<IGenericType<int>>] // Uncomment to test diagnostic
 internal class GenericType<T> : IGenericType<T> { }
 
 public interface IGenericType<T> { }

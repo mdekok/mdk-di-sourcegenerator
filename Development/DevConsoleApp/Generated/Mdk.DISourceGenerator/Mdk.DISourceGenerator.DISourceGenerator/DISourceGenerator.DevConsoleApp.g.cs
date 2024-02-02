@@ -15,6 +15,7 @@ public static partial class DIRegistrations
 
         services.RegisterServicesReferencedLibrary();
 
+        services.AddScoped<global::DevConsoleApp.Services.DI0004Super2Class, global::DevConsoleApp.Services.DI0004>();
         services.AddScoped<global::DevConsoleApp.Services.IDummyInterface, global::DevConsoleApp.Services.RegisterInterfaceNotImplemented>();
         services.AddScoped<global::DevConsoleApp.Services.IGenericType<int>, global::DevConsoleApp.Services.NonGenericType>();
         services.AddScoped<global::DevConsoleApp.Services.IInterface, global::DevConsoleApp.Services.DI0003>();

@@ -5,7 +5,7 @@ namespace Mdk.DISourceGenerator.Lib.Parts;
 
 /// <summary>Base abstract class to be subclassed by the attributed class, service type and implementation type.
 /// </summary>
-public abstract class DIPart : IDIPart
+internal abstract class DIPart : IDIPart
 {
     /// <inheritdoc />
     public abstract INamedTypeSymbol? NamedTypeSymbol { get; }

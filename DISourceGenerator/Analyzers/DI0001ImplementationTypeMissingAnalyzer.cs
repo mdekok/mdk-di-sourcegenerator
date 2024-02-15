@@ -8,7 +8,7 @@ namespace Mdk.DISourceGenerator.Analyzers;
 
 /// <summary>DI0001 analyzer: Implementation type missing</summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class DI0001ImplementationTypeMissingAnalyzer : DIAnalyzerBase
+public sealed class DI0001ImplementationTypeMissingAnalyzer : DIAnalyzerBase
 {
     /// <inheritdoc/>
     protected override DiagnosticDescriptor BuildRule() => new(

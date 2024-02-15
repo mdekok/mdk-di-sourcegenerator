@@ -3,7 +3,7 @@
 namespace Mdk.DISourceGenerator.Lib;
 
 /// <summary>DI registration of a single service registration.</summary>
-public class DIRegistration(string method, IDIPart classType, IDIPart serviceType, IDIPart? implementationType = null, bool doNotGenerateAsGeneric = false)
+public sealed class DIRegistration(string method, IDIPart classType, IDIPart serviceType, IDIPart? implementationType = null, bool doNotGenerateAsGeneric = false)
 {
     /// <summary>Gets the registration method: AddSingleton, AddScoped or AddTransient.</summary>
     public string Method { get; } = method;

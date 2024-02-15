@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis;
 namespace Mdk.DISourceGenerator.Lib;
 
 /// <summary>Builds a <seealso cref="DIRegistration"/> record containing all DI registration data.</summary>
-public static class DIRegistrationBuilder
+internal static class DIRegistrationBuilder
 {
     /// <summary>Builds a <seealso cref="DIRegistration"/> record containing all DI registration data.</summary>
     /// <param name="attribute">The DIAttribute.</param>

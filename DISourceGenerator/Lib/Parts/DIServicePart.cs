@@ -3,8 +3,7 @@
 namespace Mdk.DISourceGenerator.Lib.Parts;
 
 /// <summary>DIAttributePart of the service type.</summary>
-public class DIServicePart(AttributeData attribute)
-    : DIAttributePart(attribute)
+internal sealed class DIServicePart(AttributeData attribute) : DIAttributePart(attribute)
 {
     /// <inheritdoc />
     protected override string AttributeParameterTypeName => "ServiceType";

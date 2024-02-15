@@ -3,16 +3,16 @@
 using VerifyCS = Mdk.DISourceGenerator.UnitTests.Analyzers.Verifiers.AnalyzerVerifier<
     Mdk.DISourceGenerator.Analyzers.DI0001ImplementationTypeMissingAnalyzer>;
 
-namespace Mdk.DISourceGenerator.UnitTests.Analyzers
+namespace Mdk.DISourceGenerator.UnitTests.Analyzers;
+
+/// <summary>The DI0001 analyzer unit tests.</summary>
+public class DI0001AnalyzerTest
 {
-    /// <summary>The DI0001 analyzer unit tests.</summary>
-    public class DI0001AnalyzerTest
+    [Fact]
+    public async Task DI0001_Positive()
     {
-        [Fact]
-        public async Task DI0001_Positive()
-        {
-            // Arrange
-            var test = @"
+        // Arrange
+        var test = @"
     using Mdk.DIAttributes;
 
     [AddScoped<IGenericType<int>>]
@@ -20,27 +20,27 @@ namespace Mdk.DISourceGenerator.UnitTests.Analyzers
 
     public interface IGenericType<T> { }";
 
-            DiagnosticResult expected = VerifyCS
-                .Diagnostic("DI0001")
-                .WithLocation(0)
-                .WithArguments("AddScoped");
+        DiagnosticResult expected = VerifyCS
+            .Diagnostic("DI0001")
+            .WithLocation(0)
+            .WithArguments("AddScoped");
 
-            // Act & Assert
-            await VerifyCS.VerifyAnalyzerAsync(test, expected);
-        }
+        // Act & Assert
+        await VerifyCS.VerifyAnalyzerAsync(test, expected);
+    }
 
-        [Fact]
-        public async Task DI0001_Negative0()
-        {
-            // Arrange, Act & Assert
-            await VerifyCS.VerifyAnalyzerAsync("");
-        }
+    [Fact]
+    public async Task DI0001_Negative0()
+    {
+        // Arrange, Act & Assert
+        await VerifyCS.VerifyAnalyzerAsync("");
+    }
 
-        [Fact]
-        public async Task DI0001_Negative1()
-        {
-            // Arrange
-            var test = @"
+    [Fact]
+    public async Task DI0001_Negative1()
+    {
+        // Arrange
+        var test = @"
     using Mdk.DIAttributes;
 
     [AddScoped<IGenericType<int>, GenericType<int>>]
@@ -48,15 +48,15 @@ namespace Mdk.DISourceGenerator.UnitTests.Analyzers
 
     public interface IGenericType<T> { }";
 
-            // Act & Assert
-            await VerifyCS.VerifyAnalyzerAsync(test);
-        }
+        // Act & Assert
+        await VerifyCS.VerifyAnalyzerAsync(test);
+    }
 
-        [Fact]
-        public async Task DI0001_Negative2()
-        {
-            // Arrange
-            var test = @"
+    [Fact]
+    public async Task DI0001_Negative2()
+    {
+        // Arrange
+        var test = @"
     using Mdk.DIAttributes;
 
     [AddScoped<IGenericType<int>>]
@@ -64,8 +64,7 @@ namespace Mdk.DISourceGenerator.UnitTests.Analyzers
 
     public interface IGenericType<T> { }";
 
-            // Act & Assert
-            await VerifyCS.VerifyAnalyzerAsync(test);
-        }
+        // Act & Assert
+        await VerifyCS.VerifyAnalyzerAsync(test);
     }
 }

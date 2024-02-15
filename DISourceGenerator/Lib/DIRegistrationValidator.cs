@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Mdk.DISourceGenerator.Lib;
 
 /// <summary>DIRegistration validator.</summary>
-public static class DIRegistrationValidator
+internal static class DIRegistrationValidator
 {
     /// <summary>Validates a registration.</summary>
     /// <param name="registration">The registration.</param>

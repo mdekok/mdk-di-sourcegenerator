@@ -8,7 +8,7 @@ namespace Mdk.DISourceGenerator.Analyzers;
 
 /// <summary>DI0003 analyzer: Implementation type is not the same as class type</summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class DI0003ImplementationIsNotClassTypeAnalyzer : DIAnalyzerBase
+public sealed class DI0003ImplementationIsNotClassTypeAnalyzer : DIAnalyzerBase
 {
     /// <inheritdoc/>
     protected override DiagnosticDescriptor BuildRule() => new(

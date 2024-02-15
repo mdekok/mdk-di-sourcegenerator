@@ -9,7 +9,7 @@ namespace Mdk.DISourceGenerator.Analyzers;
 
 /// <summary>DI0002 analyzer: Interface missing on class</summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class DI0002ServiceInterfaceNotImplementedAnalyzer : DIAnalyzerBase
+public sealed class DI0002ServiceInterfaceNotImplementedAnalyzer : DIAnalyzerBase
 {
     /// <inheritdoc/>
     protected override DiagnosticDescriptor BuildRule() => new(

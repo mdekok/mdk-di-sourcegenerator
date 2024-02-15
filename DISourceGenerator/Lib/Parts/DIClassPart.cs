@@ -3,7 +3,7 @@
 namespace Mdk.DISourceGenerator.Lib.Parts;
 
 /// <summary>DI part of the class the DIAttribute is assigned to.</summary>
-public class DIClassPart(INamedTypeSymbol classType) : DIPart
+internal sealed class DIClassPart(INamedTypeSymbol classType) : DIPart
 {
     /// <inheritdoc />
     public override INamedTypeSymbol? NamedTypeSymbol => classType;

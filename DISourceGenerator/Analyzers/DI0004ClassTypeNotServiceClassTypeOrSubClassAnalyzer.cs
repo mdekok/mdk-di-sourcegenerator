@@ -9,7 +9,7 @@ namespace Mdk.DISourceGenerator.Analyzers;
 
 /// <summary>DI0004 analyzer: Class type is not the same as or subclass of service class type</summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class DI0004ClassTypeNotServiceClassTypeOrSubClassAnalyzer : DIAnalyzerBase
+public sealed class DI0004ClassTypeNotServiceClassTypeOrSubClassAnalyzer : DIAnalyzerBase
 {
     /// <inheritdoc/>
     protected override DiagnosticDescriptor BuildRule() => new(

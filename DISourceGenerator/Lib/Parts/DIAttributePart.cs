@@ -4,7 +4,7 @@ using System.Linq;
 namespace Mdk.DISourceGenerator.Lib.Parts;
 
 /// <summary>Abstract DI attribute part.</summary>
-public abstract class DIAttributePart(AttributeData attribute) : DIPart
+internal abstract class DIAttributePart(AttributeData attribute) : DIPart
 {
     /// <summary>Gets the name of the generic parameter of the attribute, if the type is defined as a generic parameter. Like in [AddScoped<ServiceType>].</summary>
     protected abstract string AttributeParameterTypeName { get; }

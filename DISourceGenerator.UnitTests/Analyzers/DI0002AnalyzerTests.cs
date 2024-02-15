@@ -3,16 +3,16 @@
 using VerifyCS = Mdk.DISourceGenerator.UnitTests.Analyzers.Verifiers.AnalyzerVerifier<
     Mdk.DISourceGenerator.Analyzers.DI0002ServiceInterfaceNotImplementedAnalyzer>;
 
-namespace Mdk.DISourceGenerator.UnitTests.Analyzers
+namespace Mdk.DISourceGenerator.UnitTests.Analyzers;
+
+/// <summary>The DI0002 analyzer unit tests.</summary>
+public class DI0002AnalyzerTest
 {
-    /// <summary>The DI0002 analyzer unit tests.</summary>
-    public class DI0002AnalyzerTest
+    [Fact]
+    public async Task DI0002_Positive()
     {
-        [Fact]
-        public async Task DI0002_Positive()
-        {
-            // Arrange
-            var test = @"
+        // Arrange
+        var test = @"
     using Mdk.DIAttributes;
 
     [AddScoped<IInterface>]
@@ -20,27 +20,27 @@ namespace Mdk.DISourceGenerator.UnitTests.Analyzers
 
     interface IInterface {}";
 
-            DiagnosticResult expected = VerifyCS
-                .Diagnostic("DI0002")
-                .WithLocation(0)
-                .WithArguments("IInterface", "Implementation");
+        DiagnosticResult expected = VerifyCS
+            .Diagnostic("DI0002")
+            .WithLocation(0)
+            .WithArguments("IInterface", "Implementation");
 
-            // Act & Assert
-            await VerifyCS.VerifyAnalyzerAsync(test, expected);
-        }
+        // Act & Assert
+        await VerifyCS.VerifyAnalyzerAsync(test, expected);
+    }
 
-        [Fact]
-        public async Task DI0002_Negative0()
-        {
-            // Arrange, Act & Assert
-            await VerifyCS.VerifyAnalyzerAsync("");
-        }
+    [Fact]
+    public async Task DI0002_Negative0()
+    {
+        // Arrange, Act & Assert
+        await VerifyCS.VerifyAnalyzerAsync("");
+    }
 
-        [Fact]
-        public async Task DI0002_Negative1()
-        {
-            // Arrange
-            var test = @"
+    [Fact]
+    public async Task DI0002_Negative1()
+    {
+        // Arrange
+        var test = @"
     using Mdk.DIAttributes;
 
     [AddScoped<IInterface>]
@@ -48,8 +48,7 @@ namespace Mdk.DISourceGenerator.UnitTests.Analyzers
 
     interface IInterface {}";
 
-            // Act & Assert
-            await VerifyCS.VerifyAnalyzerAsync(test);
-        }
+        // Act & Assert
+        await VerifyCS.VerifyAnalyzerAsync(test);
     }
 }

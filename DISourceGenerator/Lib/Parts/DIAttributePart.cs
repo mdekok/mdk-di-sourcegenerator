@@ -48,22 +48,17 @@ internal abstract class DIAttributePart(AttributeData attribute) : DIPart
         if (this.NamedTypeSymbol is not INamedTypeSymbol attributeParameterType)
             return this._asString = string.Empty;
 
-        if (attributeParameterType is not null)
+        string? genericPart = null;
+        if (attributeParameterType.IsUnboundGenericType)
         {
-            string? genericPart = null;
-            if (attributeParameterType.IsUnboundGenericType)
-            {
-                genericPart = $"<{new string(',', attributeParameterType.TypeArguments.Length - 1)}>";
-            }
-            else if (attributeParameterType.IsGenericType)
-            {
-                genericPart = $"<{string.Join(", ", attributeParameterType.TypeArguments.Select(type => type.OriginalDefinition))}>";
-            }
-
-            return this._asString = $"global::{attributeParameterType.ContainingNamespace}.{attributeParameterType.Name}{genericPart}";
+            genericPart = $"<{new string(',', attributeParameterType.TypeArguments.Length - 1)}>";
+        }
+        else if (attributeParameterType.IsGenericType)
+        {
+            genericPart = $"<{string.Join(", ", attributeParameterType.TypeArguments)}>";
         }
 
-        return this._asString = string.Empty;
+        return this._asString = $"global::{attributeParameterType.ContainingNamespace}.{attributeParameterType.Name}{genericPart}";
     }
     private string? _asString;
 }

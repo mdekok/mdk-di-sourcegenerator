@@ -399,3 +399,4 @@ FodyWeavers.xsd
 
 # Generated files
 /Examples/BlazorApp/BlazorApp/Generated/Microsoft.NET.Sdk.Razor.SourceGenerators/Microsoft.NET.Sdk.Razor.SourceGenerators.RazorSourceGenerator
+/Examples/BlazorApp/BlazorApp/Generated/Microsoft.CodeAnalysis.Razor.Compiler/Microsoft.NET.Sdk.Razor.SourceGenerators.RazorSourceGenerator

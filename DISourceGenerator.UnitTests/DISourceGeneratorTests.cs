@@ -228,7 +228,7 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
     [Theory]
     [InlineData("Singleton")]
     [InlineData("AddSingletonX")]
-    public void InvalidAttribute_GeneratesNoRegistration(string attribute)
+    public void InvalidAttributeName_GeneratesNoRegistration(string attribute)
     {
         // Arrange
         string input = $$"""
@@ -416,6 +416,115 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
             """;
         string expectedOutputSource = DISourceWriter.MergeRegistrationSourceCode(assemblyName,
             ["AddScoped<global::Library1.IInterface, global::Library1.IndirectInterfacedClass>()"]);
+
+        // Act
+        string? outputSource = DISourceGeneratorCompiler.GetGeneratedOutput(input, assemblyName);
+
+        // Assert
+        Assert.Equal(expectedOutputSource, outputSource);
+    }
+
+    [Fact]
+    public void TestInterfaces_GeneratesRegistration()
+    {
+        // Arrange
+        string input = $$$"""
+            using Mdk.DIAttributes;
+
+            namespace Library1;
+
+            public interface IInterface<T1, T2> { }
+            public class class1 {}
+
+            [AddSingleton<IInterface<class1, string>>]
+            public class MyClass: IInterface<class1, string> { }
+            """;
+        string expectedOutputSource = DISourceWriter.MergeRegistrationSourceCode(assemblyName,
+            ["AddSingleton<global::Library1.IInterface<Library1.class1, string>, global::Library1.MyClass>()"]);
+
+        // Act
+        string? outputSource = DISourceGeneratorCompiler.GetGeneratedOutput(input, assemblyName);
+
+        // Assert
+        Assert.Equal(expectedOutputSource, outputSource);
+    }
+
+    [Fact]
+    public void MultiLevelGenericsValueType_GeneratesRegistration()
+    {
+        // Arrange
+        string input = $$$"""
+            using Mdk.DIAttributes;
+
+            namespace Library1;
+
+            public interface Intf1<T> { }
+            public interface Intf2<T> { }
+            public class Impl1<T> { }
+
+            [AddScoped<Intf1<Impl1<int>>, Impl2<int>>]
+            public class Impl2<T> : Intf1<Impl1<T>> { }
+            """;
+        string expectedOutputSource = DISourceWriter.MergeRegistrationSourceCode(assemblyName,
+            ["AddScoped<global::Library1.Intf1<Library1.Impl1<int>>, global::Library1.Impl2<int>>()"]);
+
+        // Act
+        string? outputSource = DISourceGeneratorCompiler.GetGeneratedOutput(input, assemblyName);
+
+        // Assert
+        Assert.Equal(expectedOutputSource, outputSource);
+    }
+
+    [Fact]
+    public void MultiLevelGenericsReferenceType_GeneratesRegistration()
+    {
+        // Arrange
+        string input = $$$"""
+            using Mdk.DIAttributes;
+
+            namespace Library1;
+
+            public interface Intf1<T> { }
+            public interface Intf2<T> { }
+            public class Impl1<T> { }
+            public class Impl2 { }
+
+            [AddScoped<Intf1<Impl1<Impl2>>, Impl2<Impl2>>]
+            public class Impl2<T> : Intf1<Impl1<T>> { }
+            """;
+        string expectedOutputSource = DISourceWriter.MergeRegistrationSourceCode(assemblyName,
+            ["AddScoped<global::Library1.Intf1<Library1.Impl1<Library1.Impl2>>, global::Library1.Impl2<Library1.Impl2>>()"]);
+
+        // Act
+        string? outputSource = DISourceGeneratorCompiler.GetGeneratedOutput(input, assemblyName);
+
+        // Assert
+        Assert.Equal(expectedOutputSource, outputSource);
+    }
+
+    [Fact]
+    public void RequestResponse_GeneratesRegistration()
+    {
+        // Arrange
+        string input = $$$"""
+            using Mdk.DIAttributes;
+
+            namespace Library1;
+
+            public interface IRequest<out TResponse> {}
+            public interface IRequestHandler<TRequest, TResponse> {}
+
+            public record RequestRecord(RequestClass RequestClass) : IRequest<Result<ResponseClass, Error>>;
+            public class RequestClass {}
+            public class ResponseClass {}
+            public class Result<TValue, TError> {}
+            public record Error(string Message, int Code = 0);
+
+            [AddSingleton<IRequestHandler<RequestClass, ResponseClass>>]
+            public class MyClass: IRequestHandler<RequestClass, ResponseClass> { }
+            """;
+        string expectedOutputSource = DISourceWriter.MergeRegistrationSourceCode(assemblyName,
+            ["AddSingleton<global::Library1.IRequestHandler<Library1.RequestClass, Library1.ResponseClass>, global::Library1.MyClass>()"]);
 
         // Act
         string? outputSource = DISourceGeneratorCompiler.GetGeneratedOutput(input, assemblyName);

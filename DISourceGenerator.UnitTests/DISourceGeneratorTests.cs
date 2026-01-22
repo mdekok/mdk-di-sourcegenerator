@@ -399,6 +399,27 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
     }
 
     [Fact]
+    public void DI0005_GeneratesNoRegistration()
+    {
+        // Arrange
+        string input = $$$"""
+            using Mdk.DIAttributes;
+
+            namespace ns;
+
+            [AddHostedService]
+            internal class DI0005 { }
+            """;
+        string expectedResult = DISourceWriter.MergeRegistrationSourceCode(assemblyName);
+
+        // Act
+        string? output = DISourceGeneratorCompiler.GetGeneratedOutput(input, assemblyName);
+
+        // Assert
+        Assert.Equal(expectedResult, output);
+    }
+
+    [Fact]
     public void ClassWithInheritedInterface_GeneratesRegistration()
     {
         // Arrange
@@ -525,6 +546,30 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
             """;
         string expectedOutputSource = DISourceWriter.MergeRegistrationSourceCode(assemblyName,
             ["AddSingleton<global::Library1.IRequestHandler<Library1.RequestClass, Library1.ResponseClass>, global::Library1.MyClass>()"]);
+
+        // Act
+        string? outputSource = DISourceGeneratorCompiler.GetGeneratedOutput(input, assemblyName);
+
+        // Assert
+        Assert.Equal(expectedOutputSource, outputSource);
+    }
+
+    [Fact]
+    public void AddServiceHost_GeneratesRegistration()
+    {
+        // Arrange
+        string input = $$$"""
+            using Mdk.DIAttributes;
+
+            namespace Library1;
+
+            public interface IHostedService { } // Dummy IHostedService for test.
+
+            [AddHostedService]
+            public class MyClass: IHostedService { }
+            """;
+        string expectedOutputSource = DISourceWriter.MergeRegistrationSourceCode(assemblyName,
+            ["AddHostedService<global::Library1.MyClass>()"]);
 
         // Act
         string? outputSource = DISourceGeneratorCompiler.GetGeneratedOutput(input, assemblyName);

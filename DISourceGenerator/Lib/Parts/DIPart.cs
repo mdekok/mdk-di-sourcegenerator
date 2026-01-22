@@ -42,7 +42,7 @@ internal abstract class DIPart : IDIPart
     }
 
     /// <inheritdoc />
-    public ImmutableArray<INamedTypeSymbol> AllInterfaces => this.NamedTypeSymbol?.AllInterfaces ?? new();
+    public ImmutableArray<INamedTypeSymbol> AllInterfaces => this.NamedTypeSymbol?.AllInterfaces ?? [];
 
     /// <inheritdoc />
     public bool Equals(IDIPart other) => this.NamedTypeSymbol?.Equals(other.NamedTypeSymbol, SymbolEqualityComparer.Default) ?? false;

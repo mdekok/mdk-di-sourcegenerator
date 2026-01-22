@@ -1,6 +1,5 @@
 ﻿using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Testing.Verifiers;
 using Microsoft.CodeAnalysis.Testing;
 
 namespace Mdk.DISourceGenerator.UnitTests.Analyzers.Verifiers;
@@ -11,7 +10,7 @@ public static class AnalyzerVerifier<TAnalyzer>
    where TAnalyzer : DiagnosticAnalyzer, new()
 {
     public static DiagnosticResult Diagnostic(string diagnosticId)
-        => CSharpAnalyzerVerifier<TAnalyzer, XUnitVerifier>.Diagnostic(diagnosticId);
+        => CSharpAnalyzerVerifier<TAnalyzer, DefaultVerifier>.Diagnostic(diagnosticId);
 
     public static Task VerifyAnalyzerAsync(
        string source,

@@ -555,7 +555,7 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
     }
 
     [Fact]
-    public void AddServiceHost_GeneratesRegistration()
+    public void AddHostedService_GeneratesRegistration()
     {
         // Arrange
         string input = $$$"""

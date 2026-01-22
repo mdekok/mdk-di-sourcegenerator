@@ -14,7 +14,7 @@ public sealed class DI0005IHostedServiceIsNotImplementedAnalyzer : DIAnalyzerBas
     protected override DiagnosticDescriptor BuildRule() => new(
         "DI0005",
         "IHostedService missing on class",
-        "IHostedService interface missing on class: Add interface '{0}' to Class '{1}'",
+        "IHostedService interface missing on class: Add interface IHostedService to Class '{0}'",
         Constants.DiagnosticCategory,
         DiagnosticSeverity.Error,
         true);
@@ -43,5 +43,5 @@ public sealed class DI0005IHostedServiceIsNotImplementedAnalyzer : DIAnalyzerBas
     public override Diagnostic BuildDiagnostic(DIRegistration registration)
         => Diagnostic.Create(Rule,
             registration.ClassType.NamedTypeSymbol?.Locations[0],
-            registration.ServiceType?.Name, registration.ClassType.Name);
+            registration.ClassType.Name);
 }

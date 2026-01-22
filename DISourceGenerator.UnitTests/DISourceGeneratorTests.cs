@@ -231,7 +231,7 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
     public void InvalidAttributeName_GeneratesNoRegistration(string attribute)
     {
         // Arrange
-        string input = $$"""
+        string inputSource = $$"""
             using Mdk.DIAttributes;
 
             namespace Library1;
@@ -249,10 +249,10 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
             """;
 
         // Act
-        string? output = DISourceGeneratorCompiler.GetGeneratedOutput(input, assemblyName);
+        string? outputSource = DISourceGeneratorCompiler.GetGeneratedOutput(inputSource, assemblyName);
 
         // Assert
-        Assert.Null(output);
+        Assert.Null(outputSource);
     }
 
     [Theory]
@@ -261,7 +261,7 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
     public void AssemblyNameWithDots_RemovesDots(string assemblyName, string sanitizedAssemblyName)
     {
         // Arrange
-        string input = $$$"""
+        string inputSource = $$$"""
             using Mdk.DIAttributes;
 
             namespace Library1;
@@ -271,17 +271,17 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
             """;
 
         // Act
-        string? output = DISourceGeneratorCompiler.GetGeneratedOutput(input, assemblyName);
+        string? outputSource = DISourceGeneratorCompiler.GetGeneratedOutput(inputSource, assemblyName);
 
         // Assert
-        Assert.Contains($"registeredServices{sanitizedAssemblyName}", output);
+        Assert.Contains($"registeredServices{sanitizedAssemblyName}", outputSource);
     }
 
     [Fact]
     public void MultipleAttributes_GeneratesMultipleRegistrations()
     {
         // Arrange
-        string input = $$$"""
+        string inputSource = $$$"""
             using Mdk.DIAttributes;
 
             namespace Library1;
@@ -298,17 +298,17 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
             "AddScoped<global::Library1.IInterface2, global::Library1.MultipleInterfacedClass>()"]);
 
         // Act
-        string? output = DISourceGeneratorCompiler.GetGeneratedOutput(input, assemblyName);
+        string? outputSource = DISourceGeneratorCompiler.GetGeneratedOutput(inputSource, assemblyName);
 
         // Assert
-        Assert.Equal(expectedResult, output);
+        Assert.Equal(expectedResult, outputSource);
     }
 
     [Fact]
     public void DI0001_GeneratesNoRegistration()
     {
         // Arrange
-        string input = $$$"""
+        string inputSource = $$$"""
             using Mdk.DIAttributes;
 
             namespace ns;
@@ -321,7 +321,7 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
         string expectedOutputSource = DISourceWriter.MergeRegistrationSourceCode(assemblyName);
 
         // Act
-        string? outputSource = DISourceGeneratorCompiler.GetGeneratedOutput(input, assemblyName);
+        string? outputSource = DISourceGeneratorCompiler.GetGeneratedOutput(inputSource, assemblyName);
 
         // Assert
         Assert.Equal(expectedOutputSource, outputSource);
@@ -331,7 +331,7 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
     public void DI0002_GeneratesNoRegistration()
     {
         // Arrange
-        string input = $$$"""
+        string inputSource = $$$"""
             using Mdk.DIAttributes;
 
             namespace ns;
@@ -344,7 +344,7 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
         string expectedOutputSource = DISourceWriter.MergeRegistrationSourceCode(assemblyName);
 
         // Act
-        string? outputSource = DISourceGeneratorCompiler.GetGeneratedOutput(input, assemblyName);
+        string? outputSource = DISourceGeneratorCompiler.GetGeneratedOutput(inputSource, assemblyName);
 
         // Assert
         Assert.Equal(expectedOutputSource, outputSource);
@@ -354,7 +354,7 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
     public void DI0003_GeneratesNoRegistration()
     {
         // Arrange
-        string input = $$$"""
+        string inputSource = $$$"""
             using Mdk.DIAttributes;
 
             namespace ns;
@@ -369,17 +369,17 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
         string expectedResult = DISourceWriter.MergeRegistrationSourceCode(assemblyName);
 
         // Act
-        string? output = DISourceGeneratorCompiler.GetGeneratedOutput(input, assemblyName);
+        string? outputSource = DISourceGeneratorCompiler.GetGeneratedOutput(inputSource, assemblyName);
 
         // Assert
-        Assert.Equal(expectedResult, output);
+        Assert.Equal(expectedResult, outputSource);
     }
 
     [Fact]
     public void DI0004_GeneratesNoRegistration()
     {
         // Arrange
-        string input = $$$"""
+        string inputSource = $$$"""
             using Mdk.DIAttributes;
 
             namespace ns;
@@ -392,17 +392,17 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
         string expectedResult = DISourceWriter.MergeRegistrationSourceCode(assemblyName);
 
         // Act
-        string? output = DISourceGeneratorCompiler.GetGeneratedOutput(input, assemblyName);
+        string? outputSource = DISourceGeneratorCompiler.GetGeneratedOutput(inputSource, assemblyName);
 
         // Assert
-        Assert.Equal(expectedResult, output);
+        Assert.Equal(expectedResult, outputSource);
     }
 
     [Fact]
     public void DI0005_GeneratesNoRegistration()
     {
         // Arrange
-        string input = $$$"""
+        string inputSource = $$$"""
             using Mdk.DIAttributes;
 
             namespace ns;
@@ -413,17 +413,17 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
         string expectedResult = DISourceWriter.MergeRegistrationSourceCode(assemblyName);
 
         // Act
-        string? output = DISourceGeneratorCompiler.GetGeneratedOutput(input, assemblyName);
+        string? outputSource = DISourceGeneratorCompiler.GetGeneratedOutput(inputSource, assemblyName);
 
         // Assert
-        Assert.Equal(expectedResult, output);
+        Assert.Equal(expectedResult, outputSource);
     }
 
     [Fact]
     public void ClassWithInheritedInterface_GeneratesRegistration()
     {
         // Arrange
-        string input = $$$"""
+        string inputSource = $$$"""
             using Mdk.DIAttributes;
 
             namespace Library1;
@@ -439,7 +439,7 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
             ["AddScoped<global::Library1.IInterface, global::Library1.IndirectInterfacedClass>()"]);
 
         // Act
-        string? outputSource = DISourceGeneratorCompiler.GetGeneratedOutput(input, assemblyName);
+        string? outputSource = DISourceGeneratorCompiler.GetGeneratedOutput(inputSource, assemblyName);
 
         // Assert
         Assert.Equal(expectedOutputSource, outputSource);
@@ -449,7 +449,7 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
     public void TestInterfaces_GeneratesRegistration()
     {
         // Arrange
-        string input = $$$"""
+        string inputSource = $$$"""
             using Mdk.DIAttributes;
 
             namespace Library1;
@@ -464,7 +464,7 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
             ["AddSingleton<global::Library1.IInterface<Library1.class1, string>, global::Library1.MyClass>()"]);
 
         // Act
-        string? outputSource = DISourceGeneratorCompiler.GetGeneratedOutput(input, assemblyName);
+        string? outputSource = DISourceGeneratorCompiler.GetGeneratedOutput(inputSource, assemblyName);
 
         // Assert
         Assert.Equal(expectedOutputSource, outputSource);
@@ -474,7 +474,7 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
     public void MultiLevelGenericsValueType_GeneratesRegistration()
     {
         // Arrange
-        string input = $$$"""
+        string inputSource = $$$"""
             using Mdk.DIAttributes;
 
             namespace Library1;
@@ -490,7 +490,7 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
             ["AddScoped<global::Library1.Intf1<Library1.Impl1<int>>, global::Library1.Impl2<int>>()"]);
 
         // Act
-        string? outputSource = DISourceGeneratorCompiler.GetGeneratedOutput(input, assemblyName);
+        string? outputSource = DISourceGeneratorCompiler.GetGeneratedOutput(inputSource, assemblyName);
 
         // Assert
         Assert.Equal(expectedOutputSource, outputSource);
@@ -500,7 +500,7 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
     public void MultiLevelGenericsReferenceType_GeneratesRegistration()
     {
         // Arrange
-        string input = $$$"""
+        string inputSource = $$$"""
             using Mdk.DIAttributes;
 
             namespace Library1;
@@ -517,7 +517,7 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
             ["AddScoped<global::Library1.Intf1<Library1.Impl1<Library1.Impl2>>, global::Library1.Impl2<Library1.Impl2>>()"]);
 
         // Act
-        string? outputSource = DISourceGeneratorCompiler.GetGeneratedOutput(input, assemblyName);
+        string? outputSource = DISourceGeneratorCompiler.GetGeneratedOutput(inputSource, assemblyName);
 
         // Assert
         Assert.Equal(expectedOutputSource, outputSource);
@@ -527,7 +527,7 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
     public void RequestResponse_GeneratesRegistration()
     {
         // Arrange
-        string input = $$$"""
+        string inputSource = $$$"""
             using Mdk.DIAttributes;
 
             namespace Library1;
@@ -548,17 +548,17 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
             ["AddSingleton<global::Library1.IRequestHandler<Library1.RequestClass, Library1.ResponseClass>, global::Library1.MyClass>()"]);
 
         // Act
-        string? outputSource = DISourceGeneratorCompiler.GetGeneratedOutput(input, assemblyName);
+        string? outputSource = DISourceGeneratorCompiler.GetGeneratedOutput(inputSource, assemblyName);
 
         // Assert
         Assert.Equal(expectedOutputSource, outputSource);
     }
 
     [Fact]
-    public void AddServiceHost_GeneratesRegistration()
+    public void AddHostedService_GeneratesRegistration()
     {
         // Arrange
-        string input = $$$"""
+        string inputSource = $$$"""
             using Mdk.DIAttributes;
 
             namespace Library1;
@@ -572,7 +572,7 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
             ["AddHostedService<global::Library1.MyClass>()"]);
 
         // Act
-        string? outputSource = DISourceGeneratorCompiler.GetGeneratedOutput(input, assemblyName);
+        string? outputSource = DISourceGeneratorCompiler.GetGeneratedOutput(inputSource, assemblyName);
 
         // Assert
         Assert.Equal(expectedOutputSource, outputSource);

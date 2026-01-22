@@ -400,3 +400,6 @@ FodyWeavers.xsd
 # Generated files
 /Examples/BlazorApp/BlazorApp/Generated/Microsoft.NET.Sdk.Razor.SourceGenerators/Microsoft.NET.Sdk.Razor.SourceGenerators.RazorSourceGenerator
 /Examples/BlazorApp/BlazorApp/Generated/Microsoft.CodeAnalysis.Razor.Compiler/Microsoft.NET.Sdk.Razor.SourceGenerators.RazorSourceGenerator
+/Examples/BlazorApp/BlazorApp/Generated/Microsoft.AspNetCore.App.SourceGenerators/Microsoft.AspNetCore.SourceGenerators.PublicProgramSourceGenerator
+/Examples/MinimalApi/Generated/Microsoft.AspNetCore.App.SourceGenerators/Microsoft.AspNetCore.SourceGenerators.PublicProgramSourceGenerator
+/Examples/MinimalApi/Generated/Microsoft.AspNetCore.OpenApi.SourceGenerators/Microsoft.AspNetCore.OpenApi.SourceGenerators.XmlCommentGenerator

@@ -31,5 +31,6 @@ internal static class DIRegistrationValidator
         yield return DI0002ServiceInterfaceNotImplementedAnalyzer.Validate(registration);
         yield return DI0003ImplementationIsNotClassTypeAnalyzer.Validate(registration);
         yield return DI0004ClassTypeNotServiceClassTypeOrSubClassAnalyzer.Validate(registration);
+        yield return DI0005IHostedServiceIsNotImplementedAnalyzer.Validate(registration);
     }
 }

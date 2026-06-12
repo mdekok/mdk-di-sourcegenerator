@@ -38,9 +38,7 @@ public sealed class DI0004ClassTypeNotServiceClassTypeOrSubClassAnalyzer : DIAna
                 .ClassType
                 .BaseClasses
                 .Any(baseClass => baseClass.Equals(serviceType.NamedTypeSymbol, SymbolEqualityComparer.Default)))
-        {
             return new(true, false);
-        }
 
         return ValidationResult.NoDiagnostic;
     }

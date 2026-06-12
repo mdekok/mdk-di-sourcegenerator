@@ -23,10 +23,7 @@ app.UseSwaggerUI();
 // Return source generated registered services.
 app.MapGet("/registrations", (IServiceCollection services) =>
     services
-        .Where(descriptor =>
-            descriptor.ServiceType.Namespace is string ns
-                ? ns.StartsWith("MinimalApi") || ns.Contains("Business")
-                : false)
+        .Where(descriptor => descriptor.ServiceType.Namespace is string ns && (ns.StartsWith("MinimalApi") || ns.Contains("Business")))
         .Select(descriptor => new Registration(
             descriptor.ServiceType.Name,
             descriptor.ImplementationType?.Name,
@@ -40,7 +37,7 @@ app.MapGet("/MyService", (MyService service) => service.GetType().FullName);
 app.MapGet("/IInterface1", (IInterface1 service) => service.GetType().FullName);
 app.MapGet("/MyGenericService", (MyGenericService<int> service) => service.GetType().FullName);
 app.MapGet("/IInterface2string", (IInterface2<string> service) => service.GetType().FullName);
-app.MapGet("/IInterface2int", (IInterface2<int> service) => service.GetType().FullName); 
+app.MapGet("/IInterface2int", (IInterface2<int> service) => service.GetType().FullName);
 app.MapGet("/IInterface3", (IInterface3 service) => service.GetType().FullName);
 app.MapGet("/IInterface4", (IInterface4 service) => service.GetType().FullName);
 

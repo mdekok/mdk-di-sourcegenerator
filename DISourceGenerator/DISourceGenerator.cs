@@ -60,7 +60,8 @@ public class DISourceGenerator : IIncrementalGenerator
     /// <param name="symbol">The symbol.</param>
     /// <returns>True if symbol is a DIAttribute, false otherwise.</returns>
     private static bool IsDIAttributeClass(ISymbol? symbol)
-        // All DIAttributes (AddSingleton, AddScoped, AddTransient and generic versions) are in the namespace: Mdk.DIAttributes.
+        // All DIAttributes (Add(Keyed)Singleton, Add(Keyed)Scoped, Add(Keyed)Transient and generic versions)
+        // are in the namespace: Mdk.DIAttributes.
         => symbol?.ContainingNamespace.ToString() == "Mdk.DIAttributes";
 
     /// <summary>Adds the generated source code to the context.</summary>

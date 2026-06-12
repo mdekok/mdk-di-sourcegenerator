@@ -3,7 +3,13 @@
 namespace Mdk.DISourceGenerator.Lib;
 
 /// <summary>DI registration of a single service registration.</summary>
-public sealed class DIRegistration(string method, IDIPart classType, IDIPart serviceType, IDIPart? implementationType = null, bool doNotGenerateAsGeneric = false)
+public sealed class DIRegistration(
+    string method,
+    IDIPart classType,
+    IDIPart serviceType,
+    IDIPart? implementationType = null,
+    string? key = null,
+    bool doNotGenerateAsGeneric = false)
 {
     /// <summary>Gets the registration method: AddSingleton, AddScoped or AddTransient.</summary>
     public string Method { get; } = method;
@@ -16,6 +22,8 @@ public sealed class DIRegistration(string method, IDIPart classType, IDIPart ser
 
     /// <summary>Gets the implementation type.</summary>
     public IDIPart? ImplementationType { get; } = implementationType;
+
+    public string? Key { get; } = key;
 
     /// <summary>Gets a value indicating whether source must not be generated in generic style.</summary>
     public bool DoNotGenerateAsGeneric { get; } = doNotGenerateAsGeneric;
@@ -31,19 +39,21 @@ public static class DIRegistrationExtensions
         string method = registration.Method;
         string serviceType = registration.ServiceType.ToSource();
         string? implementationType = registration.ImplementationType?.ToSource();
+        string? keyPartNonGeneric = registration.Key is null ? null : $", \"{registration.Key}\"";
+        string? keyPartGeneric = registration.Key is null ? null : $"\"{registration.Key}\"";
         bool doNotGenerateAsGeneric = registration.DoNotGenerateAsGeneric;
 
         if (implementationType is not null && implementationType != serviceType)
-            // [Add{Lifetime}(typeof(ServiceType), typeof(ImplementationType))]
-            // or [Add{Lifetime}<ServiceType, ImplementationType>]
+            // [Add{Lifetime}(typeof(ServiceType), typeof(ImplementationType), "key")]
+            // or [Add{Lifetime}<ServiceType, ImplementationType>("key")]
             return doNotGenerateAsGeneric
-                ? $"{method}(typeof({serviceType}), typeof({implementationType}))"
-                : $"{method}<{serviceType}, {implementationType}>()";
+                ? $"{method}(typeof({serviceType}), typeof({implementationType}){keyPartNonGeneric})"
+                : $"{method}<{serviceType}, {implementationType}>({keyPartGeneric})";
 
-        // [Add{Lifetime}(typeof(ServiceType), typeof(ImplementationType))]
-        // or [Add{Lifetime}<ServiceType, ImplementationType>]
+        // [Add{Lifetime}(typeof(ServiceType), typeof(ImplementationType), "key")]
+        // or [Add{Lifetime}<ServiceType, ImplementationType>("key")]
         return doNotGenerateAsGeneric
-            ? $"{method}(typeof({serviceType}))"
-            : $"{method}<{serviceType}>()";
+            ? $"{method}(typeof({serviceType}){keyPartNonGeneric})"
+            : $"{method}<{serviceType}>({keyPartGeneric})";
     }
 }

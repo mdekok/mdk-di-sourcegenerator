@@ -1,20 +1,19 @@
 ﻿using Mdk.DISourceGenerator.Analyzers.Lib;
 using Mdk.DISourceGenerator.Lib;
-using Mdk.DISourceGenerator.Lib.Parts;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Mdk.DISourceGenerator.Analyzers;
 
-/// <summary>DI0003 analyzer: Implementation type is not the same as class type</summary>
+/// <summary>DI0003 analyzer: Keyed registration has no key</summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public sealed class DI0003ImplementationIsNotClassTypeAnalyzer : DIAnalyzerBase
+public sealed class DI0006KeyedRegistrationHasNoKeyAnalyzer : DIAnalyzerBase
 {
     /// <inheritdoc/>
     protected override DiagnosticDescriptor BuildRule() => new(
-        "DI0003",
-        "Implementation type is not the same as class type",
-        "Implementation type '{0}' is not the same as class type '{1}': Move attribute to class '{0}'",
+        "DI0006",
+        "Keyed registration has no key",
+        "Keyed registration '{0}' has no key as parameter",
         Constants.DiagnosticCategory,
         DiagnosticSeverity.Error,
         true);
@@ -25,13 +24,11 @@ public sealed class DI0003ImplementationIsNotClassTypeAnalyzer : DIAnalyzerBase
     /// <inheritdoc/>
     public static ValidationResult Validate(DIRegistration registration)
     {
-        // [Add{Lifetime}<ServiceType, ImplementationType>]
-        // class ClassType : ServiceType { }
-        // Is not allowed if ImplementationType is not the same as ClassType.
+        // [AddKeyed{Lifetime}...("key")]
+        // If keyed then key parameter mandatory.
 
-        if (registration.ImplementationType is IDIPart implementationType
-            && !implementationType.IsGenericType // just test simple classes
-            && !implementationType.Equals(registration.ClassType))
+        if ((registration.Method == "AddKeyedSingleton" || registration.Method == "AddKeyedScoped" || registration.Method == "AddKeyedTransient")
+            && string.IsNullOrEmpty(registration.Key))
             return new(true, false);
 
         return ValidationResult.NoDiagnostic;
@@ -41,5 +38,5 @@ public sealed class DI0003ImplementationIsNotClassTypeAnalyzer : DIAnalyzerBase
     public override Diagnostic BuildDiagnostic(DIRegistration registration)
         => Diagnostic.Create(Rule,
             registration.ClassType.NamedTypeSymbol?.Locations[0],
-            registration.ImplementationType?.Name, registration.ClassType.Name);
+            registration.Method);
 }

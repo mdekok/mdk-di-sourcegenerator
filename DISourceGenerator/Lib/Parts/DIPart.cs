@@ -28,7 +28,7 @@ internal abstract class DIPart : IDIPart
         get
         {
             if (TypeKind != TypeKind.Class)
-                return new ImmutableArray<INamedTypeSymbol>();
+                return [];
 
             ImmutableArray<INamedTypeSymbol>.Builder baseClasses = ImmutableArray.CreateBuilder<INamedTypeSymbol>();
             INamedTypeSymbol? baseType = this.NamedTypeSymbol?.BaseType;

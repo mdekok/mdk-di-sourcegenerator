@@ -1,5 +1,6 @@
 ﻿using Mdk.DISourceGenerator.Lib.Parts;
 using Microsoft.CodeAnalysis;
+using System.Linq;
 
 namespace Mdk.DISourceGenerator.Lib;
 
@@ -20,28 +21,30 @@ internal static class DIRegistrationBuilder
         DIClassPart classType = new(classSymbol);
         DIServicePart serviceType = new(attribute);
         DIImplementationPart implementationType = new(attribute);
+        // Optional key for keyed registration is the first string argument.
+        string? key = attribute.ConstructorArguments.FirstOrDefault(argument => argument.Value is string).Value as string;
 
         if (implementationType.IsDefined)
             // [Add{Lifetime}(typeof(ServiceType), typeof(ImplementationType))]
             // or [Add{Lifetime}<ServiceType, ImplementationType>]
-            return new(method, classType, serviceType, implementationType, doNotGenerateAsGeneric: serviceType.IsUnboundGenericType);
+            return new(method, classType, serviceType, implementationType, key, doNotGenerateAsGeneric: serviceType.IsUnboundGenericType);
 
         if (serviceType.IsDefined)
         {
             if (serviceType.IsUnboundGenericType)
                 // [Add{Lifetime}(typeof(ServiceType<>))]
-                return new(method, classType, serviceType, classType, doNotGenerateAsGeneric: true);
+                return new(method, classType, serviceType, classType, key, doNotGenerateAsGeneric: true);
 
             if (serviceType.IsGenericType)
                 // [Add{Lifetime}<ServiceType<int>>] or [Add{Lifetime}(typeof(ServiceType<int>))]
                 return classType.IsGenericType
-                    ? new(method, classType, serviceType)
-                    : new(method, classType, serviceType, classType);
+                    ? new(method, classType, serviceType, key: key)
+                    : new(method, classType, serviceType, classType, key);
 
-            return new(method, classType, serviceType, classType);
+            return new(method, classType, serviceType, classType, key);
         }
 
         // [AddSingleton], [AddScoped] or [AddTransient]
-        return new(method, classType, classType, doNotGenerateAsGeneric: classType.IsGenericType);
+        return new(method, classType, classType, key: key, doNotGenerateAsGeneric: classType.IsGenericType);
     }
 }

@@ -4,9 +4,6 @@ using Xunit.Abstractions;
 
 namespace Mdk.DISourceGenerator.UnitTests;
 
-#pragma warning disable MethodDocumentationHeader // The method must have a documentation header.
-#pragma warning disable ClassDocumentationHeader // The class must have a documentation header.
-
 public class DISourceGeneratorTests(ITestOutputHelper output)
 {
     private static readonly string assemblyName = Assembly.GetExecutingAssembly().GetName().Name!;
@@ -17,42 +14,67 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
     [InlineData("A01", "[AddSingleton]", "AddSingleton<global::Library1.Greeter>()")]
     [InlineData("A02", "[AddScoped]", "AddScoped<global::Library1.Greeter>()")]
     [InlineData("A03", "[AddTransient]", "AddTransient<global::Library1.Greeter>()")]
+    [InlineData("A04", "[AddKeyedSingleton(\"key\")]", "AddKeyedSingleton<global::Library1.Greeter>(\"key\")")]
+    [InlineData("A05", "[AddKeyedScoped(\"key\")]", "AddKeyedScoped<global::Library1.Greeter>(\"key\")")]
+    [InlineData("A06", "[AddKeyedTransient(\"key\")]", "AddKeyedTransient<global::Library1.Greeter>(\"key\")")]
 
     // Attribute with generic ServiceType class.
     [InlineData("A11", "[AddSingleton<Greeter>]", "AddSingleton<global::Library1.Greeter>()")]
     [InlineData("A12", "[AddScoped<Greeter>]", "AddScoped<global::Library1.Greeter>()")]
     [InlineData("A13", "[AddTransient<Greeter>]", "AddTransient<global::Library1.Greeter>()")]
+    [InlineData("A14", "[AddKeyedSingleton<Greeter>(\"key\")]", "AddKeyedSingleton<global::Library1.Greeter>(\"key\")")]
+    [InlineData("A15", "[AddKeyedScoped<Greeter>(\"key\")]", "AddKeyedScoped<global::Library1.Greeter>(\"key\")")]
+    [InlineData("A16", "[AddKeyedTransient<Greeter>(\"key\")]", "AddKeyedTransient<global::Library1.Greeter>(\"key\")")]
 
     // Attribute with generic ServiceType interface.
     [InlineData("A21", "[AddSingleton<IGreeter>]", "AddSingleton<global::Library1.IGreeter, global::Library1.Greeter>()")]
     [InlineData("A22", "[AddScoped<IGreeter>]", "AddScoped<global::Library1.IGreeter, global::Library1.Greeter>()")]
     [InlineData("A23", "[AddTransient<IGreeter>]", "AddTransient<global::Library1.IGreeter, global::Library1.Greeter>()")]
+    [InlineData("A24", "[AddKeyedSingleton<IGreeter>(\"key\")]", "AddKeyedSingleton<global::Library1.IGreeter, global::Library1.Greeter>(\"key\")")]
+    [InlineData("A25", "[AddKeyedScoped<IGreeter>(\"key\")]", "AddKeyedScoped<global::Library1.IGreeter, global::Library1.Greeter>(\"key\")")]
+    [InlineData("A26", "[AddKeyedTransient<IGreeter>(\"key\")]", "AddKeyedTransient<global::Library1.IGreeter, global::Library1.Greeter>(\"key\")")]
 
     // Attribute with generic ServiceType and ImplementationType.
     [InlineData("A31", "[AddSingleton<IGreeter, Greeter>]", "AddSingleton<global::Library1.IGreeter, global::Library1.Greeter>()")]
     [InlineData("A32", "[AddScoped<IGreeter, Greeter>]", "AddScoped<global::Library1.IGreeter, global::Library1.Greeter>()")]
     [InlineData("A33", "[AddTransient<IGreeter, Greeter>]", "AddTransient<global::Library1.IGreeter, global::Library1.Greeter>()")]
+    [InlineData("A34", "[AddKeyedSingleton<IGreeter, Greeter>(\"key\")]", "AddKeyedSingleton<global::Library1.IGreeter, global::Library1.Greeter>(\"key\")")]
+    [InlineData("A35", "[AddKeyedScoped<IGreeter, Greeter>(\"key\")]", "AddKeyedScoped<global::Library1.IGreeter, global::Library1.Greeter>(\"key\")")]
+    [InlineData("A36", "[AddKeyedTransient<IGreeter, Greeter>(\"key\")]", "AddKeyedTransient<global::Library1.IGreeter, global::Library1.Greeter>(\"key\")")]
 
     // Attribute with ServiceType class as parameter.
     [InlineData("A41", "[AddSingleton(typeof(Greeter))]", "AddSingleton<global::Library1.Greeter>()")]
     [InlineData("A42", "[AddScoped(typeof(Greeter))]", "AddScoped<global::Library1.Greeter>()")]
     [InlineData("A43", "[AddTransient(typeof(Greeter))]", "AddTransient<global::Library1.Greeter>()")]
+    [InlineData("A44", "[AddKeyedSingleton(typeof(Greeter), \"key\")]", "AddKeyedSingleton<global::Library1.Greeter>(\"key\")")]
+    [InlineData("A45", "[AddKeyedScoped(typeof(Greeter), \"key\")]", "AddKeyedScoped<global::Library1.Greeter>(\"key\")")]
+    [InlineData("A46", "[AddKeyedTransient(typeof(Greeter), \"key\")]", "AddKeyedTransient<global::Library1.Greeter>(\"key\")")]
 
     // Attribute with ServiceType interface as parameter.
     [InlineData("A51", "[AddSingleton(typeof(IGreeter))]", "AddSingleton<global::Library1.IGreeter, global::Library1.Greeter>()")]
     [InlineData("A52", "[AddScoped(typeof(IGreeter))]", "AddScoped<global::Library1.IGreeter, global::Library1.Greeter>()")]
     [InlineData("A53", "[AddTransient(typeof(IGreeter))]", "AddTransient<global::Library1.IGreeter, global::Library1.Greeter>()")]
+    [InlineData("A54", "[AddKeyedSingleton(typeof(IGreeter), \"key\")]", "AddKeyedSingleton<global::Library1.IGreeter, global::Library1.Greeter>(\"key\")")]
+    [InlineData("A55", "[AddKeyedScoped(typeof(IGreeter), \"key\")]", "AddKeyedScoped<global::Library1.IGreeter, global::Library1.Greeter>(\"key\")")]
+    [InlineData("A56", "[AddKeyedTransient(typeof(IGreeter), \"key\")]", "AddKeyedTransient<global::Library1.IGreeter, global::Library1.Greeter>(\"key\")")]
 
     // Attribute with ServiceType and ImplementationType as parameters.
     [InlineData("A61", "[AddSingleton(typeof(IGreeter), typeof(Greeter))]", "AddSingleton<global::Library1.IGreeter, global::Library1.Greeter>()")]
     [InlineData("A62", "[AddScoped(typeof(IGreeter), typeof(Greeter))]", "AddScoped<global::Library1.IGreeter, global::Library1.Greeter>()")]
     [InlineData("A63", "[AddTransient(typeof(IGreeter), typeof(Greeter))]", "AddTransient<global::Library1.IGreeter, global::Library1.Greeter>()")]
+    [InlineData("A64", "[AddKeyedSingleton(typeof(IGreeter), typeof(Greeter), \"key\")]", "AddKeyedSingleton<global::Library1.IGreeter, global::Library1.Greeter>(\"key\")")]
+    [InlineData("A65", "[AddKeyedScoped(typeof(IGreeter), typeof(Greeter), \"key\")]", "AddKeyedScoped<global::Library1.IGreeter, global::Library1.Greeter>(\"key\")")]
+    [InlineData("A66", "[AddKeyedTransient(typeof(IGreeter), typeof(Greeter), \"key\")]", "AddKeyedTransient<global::Library1.IGreeter, global::Library1.Greeter>(\"key\")")]
 
     // Exotic cases
     [InlineData("A101", "[AddSingleton<Greeter, Greeter>]", "AddSingleton<global::Library1.Greeter>()")]
     [InlineData("A102", "[AddSingleton(typeof(Greeter), typeof(Greeter)]", "AddSingleton<global::Library1.Greeter>()")]
     [InlineData("A103", "[AddSingleton<Library1.Greeter>]", "AddSingleton<global::Library1.Greeter>()")]
     [InlineData("A104", "[AddSingleton(typeof(Library1.Greeter)]", "AddSingleton<global::Library1.Greeter>()")]
+    [InlineData("A105", "[AddKeyedSingleton<Greeter, Greeter>(\"key\")]", "AddKeyedSingleton<global::Library1.Greeter>(\"key\")")]
+    [InlineData("A106", "[AddKeyedSingleton(typeof(Greeter), typeof(Greeter), \"key\")]", "AddKeyedSingleton<global::Library1.Greeter>(\"key\")")]
+    [InlineData("A107", "[AddKeyedSingleton<Library1.Greeter>(\"key\")]", "AddKeyedSingleton<global::Library1.Greeter>(\"key\")")]
+    [InlineData("A108", "[AddKeyedSingleton(typeof(Library1.Greeter), \"key\")]", "AddKeyedSingleton<global::Library1.Greeter>(\"key\")")]
     public void DIAttribute_GeneratesRegistration(string code, string attribute, string generatedSource)
     {
         this.output.WriteLine(code);
@@ -90,46 +112,73 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
     [InlineData("B01", "[AddSingleton]", "AddSingleton(typeof(global::Library1.GenericType<>))")]
     [InlineData("B02", "[AddScoped]", "AddScoped(typeof(global::Library1.GenericType<>))")]
     [InlineData("B03", "[AddTransient]", "AddTransient(typeof(global::Library1.GenericType<>))")]
+    [InlineData("B04", "[AddKeyedSingleton(\"key\")]", "AddKeyedSingleton(typeof(global::Library1.GenericType<>), \"key\")")]
+    [InlineData("B05", "[AddKeyedScoped(\"key\")]", "AddKeyedScoped(typeof(global::Library1.GenericType<>), \"key\")")]
+    [InlineData("B06", "[AddKeyedTransient(\"key\")]", "AddKeyedTransient(typeof(global::Library1.GenericType<>), \"key\")")]
 
     // Attribute with unbound generic ServiceType as parameter.
     [InlineData("B11", "[AddSingleton(typeof(Library1.IGenericType<>))]", "AddSingleton(typeof(global::Library1.IGenericType<>), typeof(global::Library1.GenericType<>))")]
     [InlineData("B12", "[AddScoped(typeof(Library1.IGenericType<>))]", "AddScoped(typeof(global::Library1.IGenericType<>), typeof(global::Library1.GenericType<>))")]
     [InlineData("B13", "[AddTransient(typeof(Library1.IGenericType<>))]", "AddTransient(typeof(global::Library1.IGenericType<>), typeof(global::Library1.GenericType<>))")]
+    [InlineData("B14", "[AddKeyedSingleton(typeof(Library1.IGenericType<>), \"key\")]", "AddKeyedSingleton(typeof(global::Library1.IGenericType<>), typeof(global::Library1.GenericType<>), \"key\")")]
+    [InlineData("B15", "[AddKeyedScoped(typeof(Library1.IGenericType<>), \"key\")]", "AddKeyedScoped(typeof(global::Library1.IGenericType<>), typeof(global::Library1.GenericType<>), \"key\")")]
+    [InlineData("B16", "[AddKeyedTransient(typeof(Library1.IGenericType<>), \"key\")]", "AddKeyedTransient(typeof(global::Library1.IGenericType<>), typeof(global::Library1.GenericType<>), \"key\")")]
 
     // Attribute with unbound generic ServiceType and ImplementationType as parameter.
     [InlineData("B21", "[AddSingleton(typeof(Library1.IGenericType<>), typeof(Library1.GenericType<>))]", "AddSingleton(typeof(global::Library1.IGenericType<>), typeof(global::Library1.GenericType<>))")]
     [InlineData("B22", "[AddScoped(typeof(Library1.IGenericType<>), typeof(Library1.GenericType<>))]", "AddScoped(typeof(global::Library1.IGenericType<>), typeof(global::Library1.GenericType<>))")]
     [InlineData("B23", "[AddTransient(typeof(Library1.IGenericType<>), typeof(Library1.GenericType<>))]", "AddTransient(typeof(global::Library1.IGenericType<>), typeof(global::Library1.GenericType<>))")]
+    [InlineData("B24", "[AddKeyedSingleton(typeof(Library1.IGenericType<>), typeof(Library1.GenericType<>), \"key\")]", "AddKeyedSingleton(typeof(global::Library1.IGenericType<>), typeof(global::Library1.GenericType<>), \"key\")")]
+    [InlineData("B25", "[AddKeyedScoped(typeof(Library1.IGenericType<>), typeof(Library1.GenericType<>), \"key\")]", "AddKeyedScoped(typeof(global::Library1.IGenericType<>), typeof(global::Library1.GenericType<>), \"key\")")]
+    [InlineData("B26", "[AddKeyedTransient(typeof(Library1.IGenericType<>), typeof(Library1.GenericType<>), \"key\")]", "AddKeyedTransient(typeof(global::Library1.IGenericType<>), typeof(global::Library1.GenericType<>), \"key\")")]
 
     // Attribute with unbound generic ServiceType and ImplementationType as parameter.
     [InlineData("B31", "[AddSingleton(typeof(Library1.IGenericType<>), typeof(Library1.GenericType<>))]", "AddSingleton(typeof(global::Library1.IGenericType<>), typeof(global::Library1.GenericType<>))")]
     [InlineData("B32", "[AddScoped(typeof(Library1.IGenericType<>), typeof(Library1.GenericType<>))]", "AddScoped(typeof(global::Library1.IGenericType<>), typeof(global::Library1.GenericType<>))")]
     [InlineData("B33", "[AddTransient(typeof(Library1.IGenericType<>), typeof(Library1.GenericType<>))]", "AddTransient(typeof(global::Library1.IGenericType<>), typeof(global::Library1.GenericType<>))")]
+    [InlineData("B34", "[AddKeyedSingleton(typeof(Library1.IGenericType<>), typeof(Library1.GenericType<>), \"key\")]", "AddKeyedSingleton(typeof(global::Library1.IGenericType<>), typeof(global::Library1.GenericType<>), \"key\")")]
+    [InlineData("B35", "[AddKeyedScoped(typeof(Library1.IGenericType<>), typeof(Library1.GenericType<>), \"key\")]", "AddKeyedScoped(typeof(global::Library1.IGenericType<>), typeof(global::Library1.GenericType<>), \"key\")")]
+    [InlineData("B36", "[AddKeyedTransient(typeof(Library1.IGenericType<>), typeof(Library1.GenericType<>), \"key\")]", "AddKeyedTransient(typeof(global::Library1.IGenericType<>), typeof(global::Library1.GenericType<>), \"key\")")]
 
     // Attribute with bound generic ImplementationType.
     [InlineData("B41", "[AddSingleton<Library1.GenericType<int>>]", "AddSingleton<global::Library1.GenericType<int>>()")]
     [InlineData("B42", "[AddScoped<Library1.GenericType<int>>]", "AddScoped<global::Library1.GenericType<int>>()")]
     [InlineData("B43", "[AddTransient<Library1.GenericType<int>>]", "AddTransient<global::Library1.GenericType<int>>()")]
+    [InlineData("B44", "[AddKeyedSingleton<Library1.GenericType<int>>(\"key\")]", "AddKeyedSingleton<global::Library1.GenericType<int>>(\"key\")")]
+    [InlineData("B45", "[AddKeyedScoped<Library1.GenericType<int>>(\"key\")]", "AddKeyedScoped<global::Library1.GenericType<int>>(\"key\")")]
+    [InlineData("B46", "[AddKeyedTransient<Library1.GenericType<int>>(\"key\")]", "AddKeyedTransient<global::Library1.GenericType<int>>(\"key\")")]
 
     // Attribute with bound generic ServiceType not supported.
     [InlineData("B51", "[AddSingleton<Library1.IGenericType<int>>]")]
     [InlineData("B52", "[AddScoped<Library1.IGenericType<int>>]")]
     [InlineData("B53", "[AddTransient<Library1.IGenericType<int>>]")]
+    [InlineData("B54", "[AddKeyedSingleton<Library1.IGenericType<int>>(\"key\")]")]
+    [InlineData("B55", "[AddKeyedScoped<Library1.IGenericType<int>>(\"key\")]")]
+    [InlineData("B56", "[AddKeyedTransient<Library1.IGenericType<int>>(\"key\")]")]
 
     // Attribute with bound generic ServiceType and ImplementationType.
     [InlineData("B61", "[AddSingleton<Library1.IGenericType<int>, Library1.GenericType<int>>]", "AddSingleton<global::Library1.IGenericType<int>, global::Library1.GenericType<int>>()")]
     [InlineData("B62", "[AddScoped<Library1.IGenericType<int>, Library1.GenericType<int>>]", "AddScoped<global::Library1.IGenericType<int>, global::Library1.GenericType<int>>()")]
     [InlineData("B63", "[AddTransient<Library1.IGenericType<int>, Library1.GenericType<int>>]", "AddTransient<global::Library1.IGenericType<int>, global::Library1.GenericType<int>>()")]
+    [InlineData("B64", "[AddKeyedSingleton<Library1.IGenericType<int>, Library1.GenericType<int>>(\"key\")]", "AddKeyedSingleton<global::Library1.IGenericType<int>, global::Library1.GenericType<int>>(\"key\")")]
+    [InlineData("B65", "[AddKeyedScoped<Library1.IGenericType<int>, Library1.GenericType<int>>(\"key\")]", "AddKeyedScoped<global::Library1.IGenericType<int>, global::Library1.GenericType<int>>(\"key\")")]
+    [InlineData("B66", "[AddKeyedTransient<Library1.IGenericType<int>, Library1.GenericType<int>>(\"key\")]", "AddKeyedTransient<global::Library1.IGenericType<int>, global::Library1.GenericType<int>>(\"key\")")]
 
     // Attribute with bound generic ServiceType as parameter.
     [InlineData("B71", "[AddSingleton(typeof(Library1.GenericType<int>))]", "AddSingleton<global::Library1.GenericType<int>>()")]
     [InlineData("B72", "[AddScoped(typeof(Library1.GenericType<int>))]", "AddScoped<global::Library1.GenericType<int>>()")]
     [InlineData("B73", "[AddTransient(typeof(Library1.GenericType<int>))]", "AddTransient<global::Library1.GenericType<int>>()")]
+    [InlineData("B74", "[AddKeyedSingleton(typeof(Library1.GenericType<int>), \"key\")]", "AddKeyedSingleton<global::Library1.GenericType<int>>(\"key\")")]
+    [InlineData("B75", "[AddKeyedScoped(typeof(Library1.GenericType<int>), \"key\")]", "AddKeyedScoped<global::Library1.GenericType<int>>(\"key\")")]
+    [InlineData("B76", "[AddKeyedTransient(typeof(Library1.GenericType<int>), \"key\")]", "AddKeyedTransient<global::Library1.GenericType<int>>(\"key\")")]
 
     // Attribute with bound generic ServiceType and ImplementationType as parameter.
     [InlineData("B81", "[AddSingleton(typeof(Library1.IGenericType<int>), typeof(Library1.GenericType<int>))]", "AddSingleton<global::Library1.IGenericType<int>, global::Library1.GenericType<int>>()")]
     [InlineData("B82", "[AddScoped(typeof(Library1.IGenericType<int>), typeof(Library1.GenericType<int>))]", "AddScoped<global::Library1.IGenericType<int>, global::Library1.GenericType<int>>()")]
     [InlineData("B83", "[AddTransient(typeof(Library1.IGenericType<int>), typeof(Library1.GenericType<int>))]", "AddTransient<global::Library1.IGenericType<int>, global::Library1.GenericType<int>>()")]
+    [InlineData("B84", "[AddKeyedSingleton(typeof(Library1.IGenericType<int>), typeof(Library1.GenericType<int>), \"key\")]", "AddKeyedSingleton<global::Library1.IGenericType<int>, global::Library1.GenericType<int>>(\"key\")")]
+    [InlineData("B85", "[AddKeyedScoped(typeof(Library1.IGenericType<int>), typeof(Library1.GenericType<int>), \"key\")]", "AddKeyedScoped<global::Library1.IGenericType<int>, global::Library1.GenericType<int>>(\"key\")")]
+    [InlineData("B86", "[AddKeyedTransient(typeof(Library1.IGenericType<int>), typeof(Library1.GenericType<int>), \"key\")]", "AddKeyedTransient<global::Library1.IGenericType<int>, global::Library1.GenericType<int>>(\"key\")")]
 
     public void DIAttributeWithGenericTypes_GeneratesRegistration(string code, string attribute, string? generatedSource = null)
     {
@@ -168,36 +217,57 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
     [InlineData("C01", "[AddSingleton]", "AddSingleton(typeof(global::Library1.GenericType<,>))")]
     [InlineData("C02", "[AddScoped]", "AddScoped(typeof(global::Library1.GenericType<,>))")]
     [InlineData("C03", "[AddTransient]", "AddTransient(typeof(global::Library1.GenericType<,>))")]
+    [InlineData("C04", "[AddKeyedSingleton(\"key\")]", "AddKeyedSingleton(typeof(global::Library1.GenericType<,>), \"key\")")]
+    [InlineData("C05", "[AddKeyedScoped(\"key\")]", "AddKeyedScoped(typeof(global::Library1.GenericType<,>), \"key\")")]
+    [InlineData("C06", "[AddKeyedTransient(\"key\")]", "AddKeyedTransient(typeof(global::Library1.GenericType<,>), \"key\")")]
 
     // Attribute with unbound generic ServiceType as parameter.
     [InlineData("C11", "[AddSingleton(typeof(Library1.GenericType<,>))]", "AddSingleton(typeof(global::Library1.GenericType<,>))")]
     [InlineData("C12", "[AddScoped(typeof(Library1.GenericType<,>))]", "AddScoped(typeof(global::Library1.GenericType<,>))")]
     [InlineData("C13", "[AddTransient(typeof(Library1.GenericType<,>))]", "AddTransient(typeof(global::Library1.GenericType<,>))")]
+    [InlineData("C14", "[AddKeyedSingleton(typeof(Library1.GenericType<,>), \"key\")]", "AddKeyedSingleton(typeof(global::Library1.GenericType<,>), \"key\")")]
+    [InlineData("C15", "[AddKeyedScoped(typeof(Library1.GenericType<,>), \"key\")]", "AddKeyedScoped(typeof(global::Library1.GenericType<,>), \"key\")")]
+    [InlineData("C16", "[AddKeyedTransient(typeof(Library1.GenericType<,>), \"key\")]", "AddKeyedTransient(typeof(global::Library1.GenericType<,>), \"key\")")]
 
     // Attribute with unbound generic ServiceType and ImplementationType as parameter.
     [InlineData("C21", "[AddSingleton(typeof(Library1.IGenericType<,>), typeof(Library1.GenericType<,>))]", "AddSingleton(typeof(global::Library1.IGenericType<,>), typeof(global::Library1.GenericType<,>))")]
     [InlineData("C22", "[AddScoped(typeof(Library1.IGenericType<,>), typeof(Library1.GenericType<,>))]", "AddScoped(typeof(global::Library1.IGenericType<,>), typeof(global::Library1.GenericType<,>))")]
     [InlineData("C23", "[AddTransient(typeof(Library1.IGenericType<,>), typeof(Library1.GenericType<,>))]", "AddTransient(typeof(global::Library1.IGenericType<,>), typeof(global::Library1.GenericType<,>))")]
+    [InlineData("C24", "[AddKeyedSingleton(typeof(Library1.IGenericType<,>), typeof(Library1.GenericType<,>), \"key\")]", "AddKeyedSingleton(typeof(global::Library1.IGenericType<,>), typeof(global::Library1.GenericType<,>), \"key\")")]
+    [InlineData("C25", "[AddKeyedScoped(typeof(Library1.IGenericType<,>), typeof(Library1.GenericType<,>), \"key\")]", "AddKeyedScoped(typeof(global::Library1.IGenericType<,>), typeof(global::Library1.GenericType<,>), \"key\")")]
+    [InlineData("C26", "[AddKeyedTransient(typeof(Library1.IGenericType<,>), typeof(Library1.GenericType<,>), \"key\")]", "AddKeyedTransient(typeof(global::Library1.IGenericType<,>), typeof(global::Library1.GenericType<,>), \"key\")")]
 
     // Attribute with bound generic ServiceType.
     [InlineData("C31", "[AddSingleton<Library1.GenericType<int, string>>]", "AddSingleton<global::Library1.GenericType<int, string>>()")]
     [InlineData("C32", "[AddScoped<Library1.GenericType<int, string>>]", "AddScoped<global::Library1.GenericType<int, string>>()")]
     [InlineData("C33", "[AddTransient<Library1.GenericType<int, string>>]", "AddTransient<global::Library1.GenericType<int, string>>()")]
+    [InlineData("C34", "[AddKeyedSingleton<Library1.GenericType<int, string>>(\"key\")]", "AddKeyedSingleton<global::Library1.GenericType<int, string>>(\"key\")")]
+    [InlineData("C35", "[AddKeyedScoped<Library1.GenericType<int, string>>(\"key\")]", "AddKeyedScoped<global::Library1.GenericType<int, string>>(\"key\")")]
+    [InlineData("C36", "[AddKeyedTransient<Library1.GenericType<int, string>>(\"key\")]", "AddKeyedTransient<global::Library1.GenericType<int, string>>(\"key\")")]
 
     // Attribute with bound generic ServiceType and ImplementationType.
     [InlineData("C41", "[AddSingleton<Library1.IGenericType<int, string>, Library1.GenericType<int, string>>]", "AddSingleton<global::Library1.IGenericType<int, string>, global::Library1.GenericType<int, string>>()")]
     [InlineData("C42", "[AddScoped<Library1.IGenericType<int, string>, Library1.GenericType<int, string>>]", "AddScoped<global::Library1.IGenericType<int, string>, global::Library1.GenericType<int, string>>()")]
     [InlineData("C43", "[AddTransient<Library1.IGenericType<int, string>, Library1.GenericType<int, string>>]", "AddTransient<global::Library1.IGenericType<int, string>, global::Library1.GenericType<int, string>>()")]
+    [InlineData("C44", "[AddKeyedSingleton<Library1.IGenericType<int, string>, Library1.GenericType<int, string>>(\"key\")]", "AddKeyedSingleton<global::Library1.IGenericType<int, string>, global::Library1.GenericType<int, string>>(\"key\")")]
+    [InlineData("C45", "[AddKeyedScoped<Library1.IGenericType<int, string>, Library1.GenericType<int, string>>(\"key\")]", "AddKeyedScoped<global::Library1.IGenericType<int, string>, global::Library1.GenericType<int, string>>(\"key\")")]
+    [InlineData("C46", "[AddKeyedTransient<Library1.IGenericType<int, string>, Library1.GenericType<int, string>>(\"key\")]", "AddKeyedTransient<global::Library1.IGenericType<int, string>, global::Library1.GenericType<int, string>>(\"key\")")]
 
     // Attribute with bound generic ServiceType as parameter.
     [InlineData("C51", "[AddSingleton(typeof(Library1.GenericType<int, string>))]", "AddSingleton<global::Library1.GenericType<int, string>>()")]
     [InlineData("C52", "[AddScoped(typeof(Library1.GenericType<int, string>))]", "AddScoped<global::Library1.GenericType<int, string>>()")]
     [InlineData("C53", "[AddTransient(typeof(Library1.GenericType<int, string>))]", "AddTransient<global::Library1.GenericType<int, string>>()")]
+    [InlineData("C54", "[AddKeyedSingleton(typeof(Library1.GenericType<int, string>), \"key\")]", "AddKeyedSingleton<global::Library1.GenericType<int, string>>(\"key\")")]
+    [InlineData("C55", "[AddKeyedScoped(typeof(Library1.GenericType<int, string>), \"key\")]", "AddKeyedScoped<global::Library1.GenericType<int, string>>(\"key\")")]
+    [InlineData("C56", "[AddKeyedTransient(typeof(Library1.GenericType<int, string>), \"key\")]", "AddKeyedTransient<global::Library1.GenericType<int, string>>(\"key\")")]
 
     // Attribute with bound generic ServiceType and ImplementationType as parameter.
     [InlineData("C61", "[AddSingleton(typeof(Library1.IGenericType<int, string>), typeof(Library1.GenericType<int, string>))]", "AddSingleton<global::Library1.IGenericType<int, string>, global::Library1.GenericType<int, string>>()")]
     [InlineData("C62", "[AddScoped(typeof(Library1.IGenericType<int, string>), typeof(Library1.GenericType<int, string>))]", "AddScoped<global::Library1.IGenericType<int, string>, global::Library1.GenericType<int, string>>()")]
     [InlineData("C63", "[AddTransient(typeof(Library1.IGenericType<int, string>), typeof(Library1.GenericType<int, string>))]", "AddTransient<global::Library1.IGenericType<int, string>, global::Library1.GenericType<int, string>>()")]
+    [InlineData("C64", "[AddKeyedSingleton(typeof(Library1.IGenericType<int, string>), typeof(Library1.GenericType<int, string>), \"key\")]", "AddKeyedSingleton<global::Library1.IGenericType<int, string>, global::Library1.GenericType<int, string>>(\"key\")")]
+    [InlineData("C65", "[AddKeyedScoped(typeof(Library1.IGenericType<int, string>), typeof(Library1.GenericType<int, string>), \"key\")]", "AddKeyedScoped<global::Library1.IGenericType<int, string>, global::Library1.GenericType<int, string>>(\"key\")")]
+    [InlineData("C66", "[AddKeyedTransient(typeof(Library1.IGenericType<int, string>), typeof(Library1.GenericType<int, string>), \"key\")]", "AddKeyedTransient<global::Library1.IGenericType<int, string>, global::Library1.GenericType<int, string>>(\"key\")")]
     public void DIAttributeWithMultipleGenericTypes_GeneratesRegistration(string code, string attribute, string generatedSource)
     {
         this.output.WriteLine(code);
@@ -409,6 +479,27 @@ public class DISourceGeneratorTests(ITestOutputHelper output)
 
             [AddHostedService]
             internal class DI0005 { }
+            """;
+        string expectedResult = DISourceWriter.MergeRegistrationSourceCode(assemblyName);
+
+        // Act
+        string? outputSource = DISourceGeneratorCompiler.GetGeneratedOutput(inputSource, assemblyName);
+
+        // Assert
+        Assert.Equal(expectedResult, outputSource);
+    }
+
+    [Fact]
+    public void DI0006_GeneratesNoRegistration()
+    {
+        // Arrange
+        string inputSource = $$$"""
+            using Mdk.DIAttributes;
+
+            namespace ns;
+
+            [AddKeyedScoped("")]
+            internal class DI0006 { }
             """;
         string expectedResult = DISourceWriter.MergeRegistrationSourceCode(assemblyName);
 

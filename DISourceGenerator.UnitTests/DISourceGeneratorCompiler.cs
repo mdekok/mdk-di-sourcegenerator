@@ -45,6 +45,6 @@ public static class DISourceGeneratorCompiler
     internal static void Initialize()
     {
         // Dummy construction to make sure the DIAttributes assembly is available as MetaDataReference above.
-        DIAttribute dummy = new AddSingleton();
+        DIAttribute _ = new AddSingleton();
     }
 }
